@@ -1,0 +1,41 @@
+TelaInicial {
+    layout: grid;
+    align: center middle;
+    grid-size: 2 4;
+    grid-gutter: 1 2;  
+}
+
+TelaCadastroLeitor TelaCadastrar {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaCadastroLeitor Input {
+    width: 20;
+}
+
+TelaCadastroLeitor TelaRemover {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaCadastroLeitor TelaEditar {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaEstoque TextArea {
+    height: 5;
+}
+
+TelaEstoque Checkbox {
+    margin: 1;
+}
+
+TelaEstoque Input {
+    width: 70%;
+}
+
+TelaEstoque #hg_pesquisa {
+    margin: 1;
+}

@@ -1,0 +1,91 @@
+TelaCadastroLivro Input {
+    width: 40%;
+    margin: 2 0 0 0;
+}
+
+TelaCadastroLivro Label {
+    margin: 3 10 0 10;
+}
+
+TelaCadastroLivro {
+    align: center middle;
+}
+
+
+TelaCadastroLivro TelaRemover {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaCadastroLivro Button {
+    margin: 2 0 0 0;
+}
+
+TelaCadastroLivro Select {
+    margin: 2 0 0 0;
+}
+
+TelaCadastroLivro #hg_genero {
+    height: 15;
+    width: 100%;
+}
+
+TelaCadastroLivro TelaCadastrar, TelaCadastroLivro TelaEditar {
+    align: center middle;
+    content-align: center middle;
+}
+
+TelaCadastroLivro TelaCadastrar Input, TelaCadastroLivro TelaEditar Input {
+    width: 20%;
+}
+
+TelaCadastroLivro TelaCadastrar Select, TelaCadastroLivro TelaEditar Select {
+    margin: 2 0 0 23;
+    width: 34%;
+}
+
+TelaCadastroLivro TelaCadastrar Button, TelaCadastroLivro TelaEditar Button {
+    margin: 0 0 0 23;
+    width: 20%;
+}
+
+TelaCadastroLivro TelaCadastrar Label, TelaCadastroLivro TelaEditar Label {
+    margin: 3 15 0 25; 
+}
+
+TelaCadastroLivro TelaCadastrar #lbl_genero, TelaCadastroLivro TelaEditar #lbl_genero {
+    margin: 3 0 0 25;
+}
+
+TelaCadastroLivro TelaCadastrar #inpt_genero, TelaCadastroLivro TelaEditar #inpt_genero {
+    margin: 2 0 0 11;
+    width: 22%
+}
+
+TelaCadastroLivro TelaCadastrar #lbl_quant {
+    margin: 3 10 0 25; 
+}
+
+
+TelaCadastroLivro TelaEditar #lbl_quant {
+    margin: 3 10 0 25; 
+}
+
+
+TelaClientela TextArea {
+    height: 5;
+}
+
+TelaClientela Checkbox {
+    margin: 1;
+}
+
+TelaClientela Input {
+    width: 90%;
+}
+
+TelaClientela #hg_pesquisa {
+    margin: 1;
+}
+
+

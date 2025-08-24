@@ -1,0 +1,13 @@
+TelaDevolucao TextArea {
+    height: 5;
+}
+
+TelaDevolucao Input {
+    width: 70%;
+}
+
+TelaDevolucao #hg_pesquisa {
+    margin: 1;
+}
+
+
