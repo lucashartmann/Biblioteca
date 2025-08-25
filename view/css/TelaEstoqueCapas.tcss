@@ -1,3 +1,7 @@
+TelaEstoqueCapas  Input{
+        width: 70%;
+}
+
 ListView {
         layout: grid;
         grid-size: 3;

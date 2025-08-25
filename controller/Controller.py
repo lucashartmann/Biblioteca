@@ -59,21 +59,36 @@ def gerar_pixel(caminho, largura, altura):
             return None
     return None
 
+if not Init.carregar_biblioteca:
+    Init.livro1.set_capa(gerar_pixel("assets/c0.jpg", 30, 30))
+    Init.livro2.set_capa(gerar_pixel("assets/c1.jpg", 30, 30))
+    Init.livro3.set_capa(gerar_pixel("assets/c2.jpg", 30, 30))
+    Init.livro4.set_capa(gerar_pixel("assets/c3.jpg", 30, 30))
 
-Init.livro1.set_capa(gerar_pixel("assets/c0.jpg", 30, 30))
-Init.livro2.set_capa(gerar_pixel("assets/c1.jpg", 30, 30))
-Init.livro3.set_capa(gerar_pixel("assets/c2.jpg", 30, 30))
-Init.livro4.set_capa(gerar_pixel("assets/c3.jpg", 30, 30))
+    Init.livro1.set_largura_capa(30)
+    Init.livro2.set_largura_capa(30)
+    Init.livro3.set_largura_capa(30)
+    Init.livro4.set_largura_capa(30)
 
-Init.livro1.set_largura_capa(30)
-Init.livro2.set_largura_capa(30)
-Init.livro3.set_largura_capa(30)
-Init.livro4.set_largura_capa(30)
+    Init.livro1.set_altura_capa(30)
+    Init.livro2.set_altura_capa(30)
+    Init.livro3.set_altura_capa(30)
+    Init.livro4.set_altura_capa(30)
+else:
+    livro1 = Init.biblioteca.get_livro_por_cod(1)
+    livro2 = Init.biblioteca.get_livro_por_cod(2)
+    livro3 = Init.biblioteca.get_livro_por_cod(3)
+    livro4 = Init.biblioteca.get_livro_por_cod(4)
 
-Init.livro1.set_altura_capa(30)
-Init.livro2.set_altura_capa(30)
-Init.livro3.set_altura_capa(30)
-Init.livro4.set_altura_capa(30)
+    livro1.set_largura_capa(30)
+    livro2.set_largura_capa(30)
+    livro3.set_largura_capa(30)
+    livro4.set_largura_capa(30)
+
+    livro1.set_altura_capa(30)
+    livro2.set_altura_capa(30)
+    livro3.set_altura_capa(30)
+    livro4.set_altura_capa(30)
 
 
 def get_livros_biblioteca():

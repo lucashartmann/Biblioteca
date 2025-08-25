@@ -1,9 +1,11 @@
-from textual.widgets import Label, ListItem, ListView, Footer, Header,  Static
+from textual.widgets import Label, Button, ListItem, ListView, Footer, Header, Static, Select, Input
 from controller import Controller
 from textual import on
 from textual.screen import Screen
-from textual.containers import VerticalScroll
+from textual.containers import VerticalScroll, HorizontalGroup
 from textual.binding import Binding
+from model import Init
+from textual.message import Message
 
 
 class TelaEstoqueCapas(Screen):
@@ -15,12 +17,22 @@ class TelaEstoqueCapas(Screen):
     ]
 
     mapa_livros = Controller.get_livros_biblioteca()
+    livros_filtrados = []
 
-    def _on_screen_resume(self):
+    filtrou_select = False
+    filtrou_input = False
+    select_evento = ""
+    montou = False
+
+    def atualizar_capas(self):
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
         # contador = 0
-        for i, livro in enumerate(self.mapa_livros.values()):
+        lista = self.mapa_livros.values()
+        if len(self.livros_filtrados) > 0:
+            lista = self.livros_filtrados
+
+        for i, livro in enumerate(lista):
             if livro.get_capa():
                 # contador += 1
 
@@ -42,17 +54,156 @@ class TelaEstoqueCapas(Screen):
                 #         list_view.append(prateleira_item)
                 #     contador = 0
 
+    def _on_screen_resume(self):
+        if Init.usuario_leitor:
+            lista_usuario = dict()
+            for chave, livro in self.mapa_livros.items():
+                if livro.is_disponivel():
+                    lista_usuario[chave] = livro
+            self.mapa_livros = lista_usuario
+        lista_categorias = []
+        for livro in self.mapa_livros.values():
+            if livro.get_genero() not in lista_categorias:
+                lista_categorias.append(livro.get_genero())
+        self.query_one(Select).set_options(
+            [(categoria, categoria) for categoria in lista_categorias])
+        self.atualizar_capas()
+
     def compose(self):
         yield Header()
         with VerticalScroll():
+            with HorizontalGroup(id="hg_pesquisa"):
+                yield Select([("genero", 'genero')])
+                yield Input()
+                if Init.usuario_leitor:
+                    yield Button("Retirar", id="bt_retirar")
+                yield Button("Voltar", id="bt_voltar")
             yield ListView(id="lst_item")
             yield Label("item", id="tx_info")
+
             yield Footer()
 
     @on(ListView.Highlighted, "#lst_item")
     def item_selecionado(self) -> None:
         lista = self.query_one("#lst_item", ListView)
         info = self.query_one("#tx_info", Label)
+        try:
+            nome_item = self.mapa_livros[lista.index + 1].get_titulo()
+            info.update(f"{nome_item}")
+        except:
+            pass
 
-        nome_item = self.mapa_livros[lista.index+1].get_titulo()
-        info.update(f"{nome_item}")
+    @on(Select.Changed)
+    def select_changed(self, evento: Select.Changed):
+        if evento.select.is_blank():
+            if self.filtrou_input == False and self.filtrou_select:
+                self.livros_filtrados = []
+            self.filtrou_select = False
+            self.atualizar_capas()
+        else:
+            valor_select = str(evento.value)
+            valor_antigo = ""
+            if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_select:
+                self.livros_filtrados = []
+                valor_antigo = valor_select
+            if len(self.livros_filtrados) == 0:
+                for livro in self.mapa_livros.values():
+                    if livro.get_genero() == valor_select:
+                        self.livros_filtrados.append(livro)
+            else:
+                livros_temp = []
+                for livro in self.livros_filtrados:
+                    if livro.get_genero() == valor_select:
+                        livros_temp.append(livro)
+                if len(livros_temp) > 0:
+                    self.livros_filtrados = livros_temp
+
+            self.filtrou_select = True
+            self.select_evento = evento
+            self.atualizar_capas()
+
+    def filtro(self, palavras, index, filtro):
+        lista_filtros = ["quant", "codigo"]
+        campo = f"get_{filtro}"
+        nova_lista = []
+        if index + 1 < len(palavras):
+            filtro = " ".join((palavras[index+1:]))
+            if filtro in lista_filtros: 
+                try:
+                    filtro = int(filtro)
+                except ValueError:
+                    self.notify("Valor Inválido")
+                    return
+            if "," in filtro:
+                filtro = filtro[0:filtro.index(
+                    ",")]
+            if "-" in filtro.split():
+                for palavraa in filtro.split("-"):
+                    if filtro.index("-")+1 < len(filtro) and palavraa not in nova_lista:
+                        nova_lista.append(palavraa.strip())
+
+            if len(self.livros_filtrados) > 0:
+                livros_temp = []
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for livro in self.livros_filtrados:
+                            if p in getattr(livro, campo)() and livro not in livros_temp:
+                                livros_temp.append(
+                                    livro)
+                else:
+                    for livro in self.livros_filtrados:
+                        if filtro in getattr(livro, campo)():
+                            livros_temp.append(livro)
+                if len(livros_temp) > 0:
+                    self.livros_filtrados = livros_temp
+            else:
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for livro in self.mapa_livros.values():
+                            if p in getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                self.livros_filtrados.append(
+                                    livro)
+                else:
+                    for livro in self.mapa_livros.values():
+                        if filtro in getattr(livro, campo)():
+                            self.livros_filtrados.append(livro)
+
+    def on_input_changed(self, evento: Input.Changed):
+        texto = evento.value.upper()
+        palavras = texto.split()
+
+        if len(palavras) > 0:
+            if self.filtrou_select == False:
+                self.livros_filtrados = []
+
+            for palavra in palavras:
+                match palavra:
+
+                    case "GENERO:":
+                        index = palavras.index("GENERO:")
+                        self.filtro(palavras, index, "genero")
+
+                    case  "TITULO:":
+                        index = palavras.index("TITULO:")
+                        self.filtro(palavras, index, "titulo")
+
+                    case  "QUANTIDADE:":
+                        index = palavras.index("QUANTIDADE:")
+                        self.filtro(palavras, index, "quant")
+
+                    case  "AUTOR:":
+                        index = palavras.index("AUTOR:")
+                        self.filtro(palavras, index, "autor")
+
+                    case "CODIGO:":
+                        index = palavras.index("CODIGO:")
+                        self.filtro(palavras, index, "codigo")
+
+                self.atualizar_capas()
+        else:
+            if len(self.livros_filtrados) > 0 and self.filtrou_select == False:
+                self.atualizar_capas()
+            elif self.filtrou_select:
+                self.select_changed(self.select_evento)
+            else:
+                self.atualizar_capas()

@@ -39,9 +39,60 @@ class TelaClientela(Container):
     def on_button_pressed(self):
         self.screen.app.switch_screen("tela_inicial")
 
+    def atualizar(self):
+        resultado = self.query_one(Pretty)
+        if len(self.leitores_filtrados) > 0:
+            leitores_str = [str(leitor)
+                            for leitor in self.leitores_filtrados]
+            resultado.update(leitores_str)
+            self.setup_dados()
+        else:
+            leitores_str = [str(leitor) for leitor in self.leitores]
+            resultado.update(leitores_str)
+            self.setup_dados()
+
+    def filtro(self, palavras, index, filtro):
+        lista_filtros = []
+        campo = f"get_{filtro}"
+        nova_lista = []
+        if index + 1 < len(palavras):
+            nome_busca = " ".join((palavras[index+1:]))
+            if "," in nome_busca:
+                nome_busca = nome_busca[0:nome_busca.index(
+                    ",")]
+            if "-" in nome_busca.split():
+                for palavraa in nome_busca.split("-"):
+                    if nome_busca.index("-")+1 < len(nome_busca) and palavraa not in nova_lista:
+                        nova_lista.append(palavraa.split())
+            if len(self.leitores_filtrados) > 0:
+                leitores_temp = []
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for leitor in self.leitores_filtrados:
+                            if p in getattr(leitor, campo)() and leitor not in leitores_temp:
+                                leitores_temp.append(
+                                    leitor)
+                else:
+                    for leitor in self.leitores_filtrados:
+                        if nome_busca in getattr(leitor, campo)() and leitor not in leitores_temp:
+                            leitores_temp.append(leitor)
+                if len(leitores_temp) > 0:
+                    self.leitores_filtrados = leitores_temp
+            else:
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for leitor in self.leitores:
+                            if p in getattr(leitor, campo)() and leitor not in self.leitores_filtrados:
+                                self.leitores_filtrados.append(
+                                    leitor)
+                else:
+                    for leitor in self.leitores:
+                        if nome_busca in getattr(leitor, campo)() and leitor not in self.leitores_filtrados:
+                            self.leitores_filtrados.append(
+                                leitor)
+
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value.upper()
-        resultado = self.query_one(Pretty)
         palavras = texto.split()
 
         if len(palavras) > 0:
@@ -51,98 +102,12 @@ class TelaClientela(Container):
                 match palavra:
                     case "NOME:":
                         index = palavras.index("NOME:")
-                        nova_lista = []
-                        if index + 1 < len(palavras):
-                            nome_busca = " ".join((palavras[index+1:]))
-                            if "," in nome_busca:
-                                nome_busca = nome_busca[0:nome_busca.index(
-                                    ",")]
-                            if "-" in nome_busca.split():
-                                for palavraa in nome_busca.split("-"):
-                                    if nome_busca.index("-")+1 < len(nome_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa.split())
-                            if len(self.leitores_filtrados) > 0:
-                                leitores_temp = []
-                                if len(nova_lista) > 0:
-                                    for p in nova_lista:
-                                        for leitor in self.leitores_filtrados:
-                                            if p in leitor.get_nome():
-                                                leitores_temp.append(
-                                                    leitor)
-                                else:
-                                    for leitor in self.leitores_filtrados:
-                                        if nome_busca in leitor.get_nome():
-                                            leitores_temp.append(leitor)
-                                if len(leitores_temp) > 0:
-                                    self.leitores_filtrados = leitores_temp
-                            else:
-                                if len(nova_lista) > 0:
-                                    for p in nova_lista:
-                                        for leitor in self.leitores:
-                                            if p in leitor.get_nome():
-                                                self.leitores_filtrados.append(
-                                                    leitor)
-                                else:
-                                    for leitor in self.leitores:
-                                        if nome_busca in leitor.get_nome():
-                                            self.leitores_filtrados.append(
-                                                leitor)
+                        self.filtro(palavras, index, "nome")
 
                     case "EMAIL:":
                         index = palavras.index("EMAIL:")
-                        nova_lista = []
-                        if index + 1 < len(palavras) and len(palavras[index + 1]) > 3:
-                            email_busca = " ".join((palavras[index+1:]))
-                            if "," in email_busca:
-                                email_busca = email_busca[0:email_busca.index(
-                                    ",")]
-                            if "-" in email_busca.split():
-                                for palavraa in email_busca.split("-"):
-                                    if email_busca.index("-")+1 < len(email_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa.split())
-                            if len(self.leitores_filtrados) > 0:
-                                leitores_temp = []
-                                if len(nova_lista) > 0:
-                                    for p in nova_lista:
-                                        for leitor in self.leitores_filtrados:
-                                            if p in leitor.get_email():
-                                                leitores_temp.append(
-                                                    leitor)
-                                else:
-                                    for leitor in self.leitores_filtrados:
-                                        if email_busca in leitor.get_email():
-                                            leitores_temp.append(leitor)
-                                if len(leitores_temp) > 0:
-                                    self.leitores_filtrados = leitores_temp
-                            else:
-                                if len(nova_lista) > 0:
-                                    for p in nova_lista:
-                                        for leitor in self.leitores:
-                                            if p in leitor.get_email():
-                                                self.leitores_filtrados.append(
-                                                    leitor)
-                                else:
-                                    for leitor in self.leitores:
-                                        if email_busca in leitor.get_email():
-                                            self.leitores_filtrados.append(
-                                                leitor)
+                        self.filtro(palavras, index, "email")
 
-                if len(self.leitores_filtrados) > 0:
-                    leitores_str = [str(leitor)
-                                    for leitor in self.leitores_filtrados]
-                    resultado.update(leitores_str)
-                    self.setup_dados()
-                else:
-                    leitores_str = [str(leitor) for leitor in self.leitores]
-                    resultado.update(leitores_str)
-                    self.setup_dados()
+                self.atualizar()
         else:
-            if len(self.leitores_filtrados) > 0:
-                leitores_str = [str(leitor)
-                                for leitor in self.leitores_filtrados]
-                resultado.update(leitores_str)
-                self.setup_dados()
-            else:
-                leitores_str = [str(leitor) for leitor in self.leitores]
-                resultado.update(leitores_str)
-                self.setup_dados()
+            self.atualizar()
