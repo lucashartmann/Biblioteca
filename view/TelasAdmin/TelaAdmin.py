@@ -23,9 +23,14 @@ class TelaAdmin(Screen):
 
     def on_cadastro_realizado(self):
         tela_estoque = self.query_one(TelaEstoque.TelaEstoque)
-        tela_estoque_capas = self.query_one(TelaEstoqueCapas.TelaEstoqueCapas)
-        tela_estoque_capas.on_mount()
         tela_estoque.on_mount()
+
+    def on_cadastro_leitor_realizado(self):
+        tela_clientela = self.query_one(TelaClientela.TelaClientela)
+        tela_clientela.on_mount()
+
+    def on_mount(self):
+        self.sub_title = "Tela Inicial"
 
     def on_cadastro_leitor_realizado(self):
         tela_clientela = self.query_one(TelaClientela.TelaClientela)

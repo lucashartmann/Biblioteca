@@ -37,7 +37,10 @@ class TelaCadastrar(Container):
         for input in self.query(Input):
             dados.append(input.value.upper())
         if self.valor_select != "Novo Genero":
-            dados.append(self.query_one(Select).value)
+            if self.query_one(Select).is_blank():
+                dados.append("")
+            else:
+                dados.append(self.query_one(Select).value)
         elif self.montou:
             dados.append(self.query_one("#inpt_genero", Input).value)
         else:
@@ -91,8 +94,8 @@ class TelaEditar(VerticalScroll):
         with HorizontalGroup():
             yield Label("Caminho da Capa")
             yield Input(placeholder="Caminho aqui")
-            yield Label("Tamanho da capa")
-            yield Input(placeholder="Tamanho")
+            yield Input(placeholder="Largura aqui")
+            yield Input(placeholder="Altura aqui")
         with HorizontalGroup(id="hg_genero"):
             yield Select([("genero", 'genero')])
         yield HorizontalGroup(id="hg_resultado")
@@ -113,7 +116,10 @@ class TelaEditar(VerticalScroll):
             for input in self.query(Input)[1:]:
                 dados.append(input.value.upper())
             if self.valor_select != "Novo Genero":
-                dados.append(self.query_one(Select).value)
+                if self.query_one(Select).is_blank():
+                    dados.append("")
+                else:
+                    dados.append(self.query_one(Select).value)
             elif self.montou:
                 dados.append(self.query_one(
                     "#inpt_genero", Input).value)
@@ -121,7 +127,7 @@ class TelaEditar(VerticalScroll):
                 dados.append("")
             mensagem = Controller.editar_livro(input_id, dados)
             capa = Controller.get_capa(input_id)
-            if capa:
+            if (dados[3] or dados[4] or dados[5]) and capa:
                 hg = self.query_one("#hg_resultado", HorizontalGroup)
                 hg.styles.height = 20
                 hg.styles.width = "50%"
@@ -133,9 +139,13 @@ class TelaEditar(VerticalScroll):
                     self.montou_desenho = False
                 hg.mount(Static(capa))
                 self.montou_desenho = True
+            else:
+                if self.montou_desenho:
+                    hg.remove_children()
+                    self.montou_desenho = False
             self.notify(str(mensagem), markup=False)
             self.screen.on_mount()
-            self.post_message(self.CadastroRealizado(self))
+            self.post_message(CadastroRealizado(self))
 
 
 class TelaCadastroLivro(Container):

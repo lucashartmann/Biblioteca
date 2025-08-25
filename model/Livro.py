@@ -4,7 +4,8 @@ class Livro:
     def __init__(self, titulo, autor, genero, quant):
         self.capa = ""
         self.caminho_capa = ""
-        self.tamanho_capa = 0
+        self.largura_capa = 0
+        self.altura_capa = 0
         self.autor = autor
         self.genero = genero
         self.titulo = titulo
@@ -12,17 +13,24 @@ class Livro:
         self.quant = quant
         self.disponivel = True
 
+    def get_largura_capa(self):
+        return self.largura_capa
+        
+    def get_altura_capa(self):
+        return self.altura_capa
+        
+    def set_largura_capa(self, novo_largura_capa):
+        self.largura_capa = novo_largura_capa
+    
+    def set_altura_capa(self, novo_altura_capa):
+        self.altura_capa = novo_altura_capa
+
     def get_caminho_capa(self):
        return self.caminho_capa
-    
-    def get_tamanho_capa(self):
-        return self.tamanho_capa
 
     def set_caminho_capa(self, novo_caminho):
        self.caminho_capa = novo_caminho
     
-    def set_tamanho_capa(self, novo_tamanho):
-        self.tamanho_capa = novo_tamanho
 
     def gerar_cod(self):
         Livro.cod += 1

@@ -3,10 +3,9 @@ ListView {
         grid-size: 3;
         grid-gutter: 1;
         background: rgb(100, 100, 100);
-    }
+}
     
 ListItem {
-        width: 70%;
         text-align: center;
         background: rgb(255, 255, 255);
         height: 99%;
@@ -14,9 +13,9 @@ ListItem {
         margin: 1;
         margin-left: 11;
         color: green;
-    }
+}
     
 .item{
         width: 85%;
         max-width: 85%;
-    }
+}

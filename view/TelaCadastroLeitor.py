@@ -98,7 +98,7 @@ class TelaCadastroLeitor(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_voltar":
-                self.screen.app.switch_screen("tela_admin")
+                self.screen.app.switch_screen("tela_inicial")
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""

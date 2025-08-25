@@ -1,10 +1,17 @@
 from textual.widgets import Input, Pretty, TextArea, Button
-from textual.containers import HorizontalGroup, Container
+from textual.containers import HorizontalGroup, VerticalScroll
 from controller import Controller
 from model import Init
+from textual.message import Message
 
 
-class TelaDevolucao(Container):
+class DevolucaoRealizada(Message):
+    def __init__(self, sender) -> None:
+        super().__init__()
+        self.sender = sender
+
+
+class TelaDevolucao(VerticalScroll):
 
     CSS_PATH = "css/TelaDevolucao.tcss"
 
@@ -24,6 +31,7 @@ class TelaDevolucao(Container):
     filtrou_input = False
     select_evento = ""
     checkbox_evento = ""
+    montou = False
 
     def setup_dados(self):
         if len(self.emprestimos_filtrados) > 0:
@@ -33,20 +41,27 @@ class TelaDevolucao(Container):
         self.query_one(TextArea).text = f"Quantidade de Empréstimos: {quant}"
 
     def on_mount(self):
-        emprestimos_str = [str(emprestimos)
-                           for emprestimos in self.emprestimos]
-        self.mount(Pretty(emprestimos_str))
+        emprestimos_str = []
+        for emprestimo in self.emprestimos:
+            emprestimo_str = str(emprestimo).split(",")[:-1]
+            emprestimos_str.append(emprestimo_str)
+        if self.montou:
+            self.query_one(Pretty).update(emprestimos_str)
+        else:
+            self.mount(Pretty(emprestimos_str))
+            self.montou = True
         self.setup_dados()
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_voltar":
-                self.screen.app.switch_screen("tela_leitor")
+                self.screen.app.switch_screen("tela_inicial")
             case "bt_devolver":
                 cod_livro = self.query_one(Input).value
                 devolucao = Controller.devolver(cod_livro, Init.leitor1.email)
                 self.notify(devolucao)
-                self.mount()
+                self.on_mount()
+                self.post_message(DevolucaoRealizada(self))
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value.upper()
@@ -210,25 +225,33 @@ class TelaDevolucao(Container):
                                             emprestimo)
 
                 if len(self.emprestimos_filtrados) > 0:
-                    emprestimos_str = [str(emprestimo)
-                                       for emprestimo in self.emprestimos_filtrados]
+                    emprestimos_str = []
+                    for emprestimo in self.emprestimos_filtrados:
+                        emprestimo_str = str(emprestimo).split(",")[:-1]
+                        emprestimos_str.append(emprestimo_str)
                     resultado.update(emprestimos_str)
                     self.setup_dados()
                 else:
-                    emprestimos_str = [str(emprestimo)
-                                       for emprestimo in self.emprestimos]
+                    emprestimos_str = []
+                    for emprestimo in self.emprestimos:
+                        emprestimo_str = str(emprestimo).split(",")[:-1]
+                        emprestimos_str.append(emprestimo_str)
                     resultado.update(emprestimos_str)
                     self.setup_dados()
         else:
             if len(self.emprestimos_filtrados) > 0 and self.filtrou_select == False:
-                emprestimos_str = [str(emprestimo)
-                                   for emprestimo in self.emprestimos_filtrados]
+                emprestimos_str = []
+                for emprestimo in self.emprestimos_filtrados:
+                    emprestimo_str = str(emprestimo).split(",")[:-1]
+                    emprestimos_str.append(emprestimo_str)
                 resultado.update(emprestimos_str)
                 self.setup_dados()
             elif self.filtrou_select:
                 self.select_changed(self.select_evento)
             else:
-                emprestimos_str = [str(emprestimo)
-                                   for emprestimo in self.emprestimos]
+                emprestimos_str = []
+                for emprestimo in self.emprestimos:
+                    emprestimo_str = str(emprestimo).split(",")[:-1]
+                    emprestimos_str.append(emprestimo_str)
                 resultado.update(emprestimos_str)
                 self.setup_dados()

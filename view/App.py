@@ -3,14 +3,18 @@ from view import TelaInicial, TelaEstoqueCapas
 from view.TelasLeitor import TelaLeitor
 from view.TelasAdmin import TelaAdmin
 from textual.binding import Binding
+from model import Shelve
 
 class App(App):
 
     
     BINDINGS = {
-        Binding("s", "app.push_screen('tela_estoque')", "Tela Estoque")
+        Binding("s", "app.push_screen('tela_estoque')", "Tela Estoque"),
+        Binding("ctrl+s", "salvar", "Salvar")
     }
-
+        
+    def action_salvar(self):
+        pass
 
     SCREENS = {
         "tela_inicial": TelaInicial.TelaInicial,

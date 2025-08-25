@@ -2,6 +2,7 @@ from textual.screen import Screen
 from textual.widgets import TabbedContent, TabPane, Footer, Header
 from view.TelasLeitor import TelaDevolucao
 from view import TelaCadastroLeitor, TelaEstoque
+from view.TelasLeitor import TelaDevolucao
 
 class TelaLeitor(Screen):
 
@@ -20,3 +21,12 @@ class TelaLeitor(Screen):
 
     def on_mount(self):
         self.sub_title = "Tela Inicial"
+
+    def on_devolucao_realizada(self):
+        tela_devolucao = self.query_one(TelaDevolucao.TelaDevolucao)
+        tela_devolucao.on_mount()
+      
+
+    def on_retirada_realizada(self):
+        tela_devolucao = self.query_one(TelaDevolucao.TelaDevolucao)
+        tela_devolucao.on_mount()

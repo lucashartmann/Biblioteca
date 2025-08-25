@@ -1,11 +1,18 @@
 from textual.widgets import Input, Pretty, TextArea, Button, Select
-from textual.containers import HorizontalGroup, Container
+from textual.containers import HorizontalGroup, VerticalScroll
 from controller import Controller
 from textual import on
 from model import Init
+from textual.message import Message
 
 
-class TelaEstoque(Container):
+class RetiradaRealizada(Message):
+    def __init__(self, sender) -> None:
+        super().__init__()
+        self.sender = sender
+
+
+class TelaEstoque(VerticalScroll):
     CSS_PATH = "css/TelaEstoque.tcss"
 
     def compose(self):
@@ -20,6 +27,7 @@ class TelaEstoque(Container):
             pass
 
     livros = Controller.get_livros_biblioteca().values()
+
     livros_filtrados = []
     filtrou_checkbox = False
     filtrou_select = False
@@ -37,10 +45,16 @@ class TelaEstoque(Container):
     def on_mount(self):
         livros_str = []
         if Init.usuario_leitor:
+            lista_usuario = []
             for livro in self.livros:
                 if livro.is_disponivel():
-                    livro.__str__ = livro.__str__().split(",")[:-1]
-                    livros_str.append(livro.__str__)
+                    lista_usuario.append(livro)
+            self.livros = lista_usuario
+        if Init.usuario_leitor:
+            for livro in self.livros:
+                if livro.is_disponivel():
+                    livro_str = str(livro).split(",")[:-1]
+                    livros_str.append(livro_str)
         else:
             livros_str = [str(livro) for livro in self.livros]
         if self.montou:
@@ -59,15 +73,14 @@ class TelaEstoque(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_voltar":
-                if not Init.usuario_leitor:
-                    self.screen.app.switch_screen("tela_admin")
-                else:
-                    self.screen.app.switch_screen("tela_leitor")
+                self.screen.app.switch_screen("tela_inicial")
             case "bt_retirar":
                 cod_livro = self.query_one(Input).value
                 retirada = Controller.emprestar(
                     cod_livro, Init.leitor1.get_email())
                 self.notify(retirada)
+                self.on_mount()
+                self.post_message(RetiradaRealizada(self))
 
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
