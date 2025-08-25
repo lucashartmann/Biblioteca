@@ -1,6 +1,6 @@
 # TelaCadastroLivro
 
-TelaCadastroLivro, TelaEditar, TelaRemover, TelaCadastrar {
+TelaCadastroLivro {
     layout: grid;
     align: center middle;
 }
@@ -8,76 +8,6 @@ TelaCadastroLivro, TelaEditar, TelaRemover, TelaCadastrar {
 Input {
     width: 20%;
 }
-
-# TelaCadastroLivro TelaRemover
-
-TelaRemover {
-    grid-size: 3 2;   # 3 colunas, 2 linhas 
-}
-
-#input_id {
-    grid-rows: 1;
-    grid-columns: 2;
-    column-span: 2;  
-}
-
-# TelaCadastroLivro TelaCadastrar
-
-TelaCadastrar {
-    grid-size: 4 4;   # 4 colunas, 4 linhas 
-}
-
-TelaCadastrar Input {
-    width: 90%;
-}
-
-TelaCadastrar #inpt_quant {
-    column-span: 3; 
-    width: 29.5%;
-}
-
-TelaCadastrar #lbl_genero {
-    margin: 1;
-}
-
-TelaCadastrar #inpt_genero {
-    width: 77%;
-    margin-left: 44;
-}
-
-TelaCadastrar #slct_genero {
-    column-span: 4; 
-    width: 20%;
-}
-
-# TelaEditar TelaEditar
-
-TelaEditar {
-    grid-size: 4 5;   # 4 colunas, 4 linhas 
-}
-
-TelaEditar Input {
-    width: 80%;
-}
-
-TelaEditar #input_id{
-    width: 20%;
-}
-
-TelaEditar #lbl_genero {
-    margin: 1;
-}
-
-TelaEditar #inpt_genero {
-    width: 77%;
-    margin-left: 44;
-}
-
-TelaEditar #slct_genero {
-    column-span: 2; 
-    width: 40%;
-}
-
 
 # TelaClientela
 

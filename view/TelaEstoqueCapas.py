@@ -8,6 +8,12 @@ from model import Init
 from textual.message import Message
 
 
+class RetiradaRealizada(Message):
+    def __init__(self, sender) -> None:
+        super().__init__()
+        self.sender = sender
+
+
 class TelaEstoqueCapas(Screen):
 
     CSS_PATH = "css/TelaEstoqueCapas.tcss"
@@ -77,11 +83,30 @@ class TelaEstoqueCapas(Screen):
                 yield Input()
                 if Init.usuario_leitor:
                     yield Button("Retirar", id="bt_retirar")
+                else:
+                    yield Button("Remover", id="bt_remover")
                 yield Button("Voltar", id="bt_voltar")
             yield ListView(id="lst_item")
             yield Label("item", id="tx_info")
 
             yield Footer()
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_voltar":
+                self.screen.app.switch_screen("tela_inicial")
+            case "bt_retirar":
+                cod_livro = self.query_one(Input).value
+                retirada = Controller.emprestar(
+                    cod_livro, Init.leitor1.get_email())
+                self.notify(retirada)
+                self.on_mount()
+                self.post_message(RetiradaRealizada(self))
+            case "bt_remover":
+                input_id = self.query_one(Input).value
+                mensagem = Controller.excluir_livro(input_id)
+                self.notify(str(mensagem), markup=False)
+                self.post_message(RetiradaRealizada(self))
 
     @on(ListView.Highlighted, "#lst_item")
     def item_selecionado(self) -> None:
@@ -128,7 +153,7 @@ class TelaEstoqueCapas(Screen):
         nova_lista = []
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
-            if filtro in lista_filtros: 
+            if filtro in lista_filtros:
                 try:
                     filtro = int(filtro)
                 except ValueError:

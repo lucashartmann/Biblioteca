@@ -5,6 +5,7 @@ TelaInicial {
     grid-gutter: 1 2;  
 }
 
+# TelaEstoque 
 
 TelaEstoque TextArea {
     height: 5;
@@ -22,37 +23,17 @@ TelaEstoque #hg_pesquisa {
     margin: 1;
 }
 
-TelaCadastroLeitor TelaCadastrar, TelaCadastroLeitor TelaRemover,  TelaCadastroLeitor TelaEditar{
-    layout: grid;
-    align: center middle;
-    grid-size: 4 2;
-}
+# TelaCadastroLeitor
 
-TelaCadastrar #input_email {
-    column-span: 2;  
-}
-
-TelaCadastroLeitor TelaEditar{
+TelaCadastroLeitor {
     layout: grid;
     align: center middle;
     grid-size: 4 3;
-    grid-gutter: 0;  
 }
 
 TelaCadastroLeitor Input{
     width: 80%;
 }
 
-TelaEditar #input_novo_email {
-    column-span: 4;  
-    width: 26.5%;
-}
 
-TelaRemover {
-    grid-size: 3 2;   # 3 colunas, 2 linhas 
-}
-
-#input_remover_email {
-    column-span: 3;  
-}
 

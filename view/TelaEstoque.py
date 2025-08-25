@@ -21,6 +21,8 @@ class TelaEstoque(VerticalScroll):
             yield Input()
             if Init.usuario_leitor:
                 yield Button("Retirar", id="bt_retirar")
+            else:
+                yield Button("Remover", id="bt_remover")
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(disabled=True)
         with HorizontalGroup(id="container"):
@@ -78,6 +80,11 @@ class TelaEstoque(VerticalScroll):
                     cod_livro, Init.leitor1.get_email())
                 self.notify(retirada)
                 self.on_mount()
+                self.post_message(RetiradaRealizada(self))
+            case "bt_remover":
+                input_id = self.query_one(Input).value
+                mensagem = Controller.excluir_livro(input_id)
+                self.notify(str(mensagem), markup=False)
                 self.post_message(RetiradaRealizada(self))
 
     @on(Select.Changed)
