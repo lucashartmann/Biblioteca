@@ -5,6 +5,7 @@ from textual.screen import Screen
 from textual.containers import VerticalScroll
 from textual.binding import Binding
 
+
 class TelaEstoqueCapas(Screen):
 
     CSS_PATH = "css/TelaEstoqueCapas.tcss"
@@ -13,9 +14,7 @@ class TelaEstoqueCapas(Screen):
         Binding("x", "app.switch_screen('tela_inicial')", "Voltar")
     ]
 
-
     mapa_livros = Controller.get_livros_biblioteca()
-
 
     def _on_screen_resume(self):
         list_view = self.query_one("#lst_item", ListView)
@@ -31,7 +30,7 @@ class TelaEstoqueCapas(Screen):
 
                 list_item = ListItem(static)
                 list_item.styles.width = livro.get_largura_capa() - 10
-                list_item.styles.height = livro.get_altura_capa()
+                list_item.styles.height = livro.get_altura_capa() - 15
 
                 list_view.append(list_item)
 

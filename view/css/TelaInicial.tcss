@@ -1,28 +1,10 @@
 TelaInicial {
     layout: grid;
     align: center middle;
-    grid-size: 2 4;
+    grid-size: 3 1;
     grid-gutter: 1 2;  
 }
 
-TelaCadastroLeitor TelaCadastrar {
-    layout: grid;
-    grid-size: 4 5;
-}
-
-TelaCadastroLeitor Input {
-    width: 20;
-}
-
-TelaCadastroLeitor TelaRemover {
-    layout: grid;
-    grid-size: 4 5;
-}
-
-TelaCadastroLeitor TelaEditar {
-    layout: grid;
-    grid-size: 4 5;
-}
 
 TelaEstoque TextArea {
     height: 5;
@@ -39,3 +21,38 @@ TelaEstoque Input {
 TelaEstoque #hg_pesquisa {
     margin: 1;
 }
+
+TelaCadastroLeitor TelaCadastrar, TelaCadastroLeitor TelaRemover,  TelaCadastroLeitor TelaEditar{
+    layout: grid;
+    align: center middle;
+    grid-size: 4 2;
+}
+
+TelaCadastrar #input_email {
+    column-span: 2;  
+}
+
+TelaCadastroLeitor TelaEditar{
+    layout: grid;
+    align: center middle;
+    grid-size: 4 3;
+    grid-gutter: 0;  
+}
+
+TelaCadastroLeitor Input{
+    width: 80%;
+}
+
+TelaEditar #input_novo_email {
+    column-span: 4;  
+    width: 26.5%;
+}
+
+TelaRemover {
+    grid-size: 3 2;   # 3 colunas, 2 linhas 
+}
+
+#input_remover_email {
+    column-span: 3;  
+}
+

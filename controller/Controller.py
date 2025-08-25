@@ -94,10 +94,10 @@ def emprestar(cod_livro, email):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not livro:
-        return f"Erro, livro '{livro.get_codigo()}' não existe"
+        return f"Erro, livro '{cod_livro}' não existe"
 
     if not leitor:
-        return f"Erro, leitor '{leitor.get_email()}' não existe"
+        return f"Erro, leitor '{email}' não existe"
 
     emprestimo = Init.biblioteca.emprestar(livro, leitor)
 
@@ -121,10 +121,10 @@ def devolver(cod_livro, email):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not livro:
-        return f"Erro, livro '{livro.get_codigo()}' não existe"
+        return f"Erro, livro '{cod_livro}' não existe"
 
     if not leitor:
-        return f"Erro, leitor '{leitor.get_email()}' não existe"
+        return f"Erro, leitor '{email}' não existe"
 
     emprestimo = leitor.get_emprestimo_por_livro(cod_livro)
 
@@ -224,7 +224,7 @@ def editar_leitor(email, dados):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not leitor:
-        return f"Erro, leitor '{leitor.get_email()}' não existe"
+        return f"Erro, leitor '{email}' não existe"
 
     mensagem = ""
 

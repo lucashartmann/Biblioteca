@@ -30,3 +30,8 @@ class TelaLeitor(Screen):
     def on_retirada_realizada(self):
         tela_devolucao = self.query_one(TelaDevolucao.TelaDevolucao)
         tela_devolucao.on_mount()
+        
+        
+    def on_cadastro_realizado(self):
+        tela_estoque = self.query_one(TelaEstoque.TelaEstoque)
+        tela_estoque.on_mount()

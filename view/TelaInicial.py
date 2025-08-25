@@ -13,6 +13,7 @@ class TelaInicial(Screen):
         yield Button("Admin", id="bt_admin")
         yield Button("Encerrar", id="bt_sair")
         yield Footer()
+        
 
     def on_mount(self):
         self.sub_title = "Tela Inicial"

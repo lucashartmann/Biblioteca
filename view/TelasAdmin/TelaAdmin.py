@@ -20,7 +20,7 @@ class TelaAdmin(Screen):
             with TabPane("Clientela"):
                 yield TelaClientela.TelaClientela()
         yield Footer()
-
+        
     def on_cadastro_realizado(self):
         tela_estoque = self.query_one(TelaEstoque.TelaEstoque)
         tela_estoque.on_mount()

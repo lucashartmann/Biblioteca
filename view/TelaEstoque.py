@@ -50,7 +50,6 @@ class TelaEstoque(VerticalScroll):
                 if livro.is_disponivel():
                     lista_usuario.append(livro)
             self.livros = lista_usuario
-        if Init.usuario_leitor:
             for livro in self.livros:
                 if livro.is_disponivel():
                     livro_str = str(livro).split(",")[:-1]
@@ -136,9 +135,9 @@ class TelaEstoque(VerticalScroll):
                                 genero_busca = genero_busca[0:genero_busca.index(
                                     ",")]
                             if "-" in genero_busca.split():
-                                for palavraa in genero_busca.split():
-                                    if palavraa != "-" and genero_busca.index("-")+1 < len(genero_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa)
+                                for palavraa in genero_busca.split("-"):
+                                    if genero_busca.index("-")+1 < len(genero_busca) and palavraa not in nova_lista:
+                                        nova_lista.append(palavraa.strip())
 
                             if len(self.livros_filtrados) > 0:
                                 livros_temp = []
@@ -176,15 +175,15 @@ class TelaEstoque(VerticalScroll):
                                 titulo_busca = titulo_busca[0:titulo_busca.index(
                                     ",")]
                             if "-" in titulo_busca.split():
-                                for palavraa in titulo_busca.split():
-                                    if palavraa != "-" and titulo_busca.index("-")+1 < len(titulo_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa)
+                                for palavraa in titulo_busca.split("-"):
+                                    if titulo_busca.index("-")+1 < len(titulo_busca) and palavraa not in nova_lista:
+                                        nova_lista.append(palavraa.strip())
                             if len(self.livros_filtrados) > 0:
                                 livros_temp = []
                                 if len(nova_lista) > 0:
                                     for p in nova_lista:
                                         for livro in self.livros_filtrados:
-                                            if p in livro.get_titulo():
+                                            if p in livro.get_titulo() and livro not in livros_temp:
                                                 livros_temp.append(
                                                     livro)
                                 else:
@@ -196,8 +195,9 @@ class TelaEstoque(VerticalScroll):
                             else:
                                 if len(nova_lista) > 0:
                                     for p in nova_lista:
+                                        self.notify(str(p))
                                         for livro in self.livros:
-                                            if p in livro.get_titulo():
+                                            if p in livro.get_titulo() and livro not in self.livros_filtrados:
                                                 self.livros_filtrados.append(
                                                     livro)
 
@@ -218,16 +218,16 @@ class TelaEstoque(VerticalScroll):
                                     quantidade_busca = quantidade_busca[0:quantidade_busca.index(
                                         ",")]
                                 if "-" in quantidade_busca.split():
-                                    for palavraa in quantidade_busca.split():
-                                        if palavraa != "-" and quantidade_busca.index("-")+1 < len(quantidade_busca) and palavraa not in nova_lista:
-                                            nova_lista.append(palavraa)
+                                    for palavraa in quantidade_busca.split("-"):
+                                        if quantidade_busca.index("-")+1 < len(quantidade_busca) and palavraa not in nova_lista:
+                                            nova_lista.append(palavraa.strip())
                                 quantidade_busca = int(quantidade_busca)
                                 if len(self.livros_filtrados) > 0:
                                     livros_temp = []
                                     if len(nova_lista) > 0:
                                         for p in nova_lista:
                                             for livro in self.livros_filtrados:
-                                                if p == livro.get_quant():
+                                                if p == livro.get_quant() and livro not in livros_temp:
                                                     livros_temp.append(
                                                         livro)
                                     else:
@@ -240,7 +240,7 @@ class TelaEstoque(VerticalScroll):
                                     if len(nova_lista) > 0:
                                         for p in nova_lista:
                                             for livro in self.livros:
-                                                if p == livro.livro.get_quant():
+                                                if p == livro.livro.get_quant() and livro not in self.livros_filtrados:
                                                     self.livros_filtrados.append(
                                                         livro)
 
@@ -261,15 +261,15 @@ class TelaEstoque(VerticalScroll):
                                 autor_busca = autor_busca[0:autor_busca.index(
                                     ",")]
                             if "-" in autor_busca.split():
-                                for palavraa in autor_busca.split():
-                                    if palavraa != "-" and autor_busca.index("-")+1 < len(autor_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa)
+                                for palavraa in autor_busca.split("-"):
+                                    if autor_busca.index("-")+1 < len(autor_busca) and palavraa not in nova_lista:
+                                        nova_lista.append(palavraa.strip())
                             if len(self.livros_filtrados) > 0:
                                 livros_temp = []
                                 if len(nova_lista) > 0:
                                     for p in nova_lista:
                                         for livro in self.livros_filtrados:
-                                            if p in livro.get_autor():
+                                            if p in livro.get_autor() and livro not in livros_temp:
                                                 livros_temp.append(
                                                     livro)
                                 else:
@@ -282,7 +282,7 @@ class TelaEstoque(VerticalScroll):
                                 if len(nova_lista) > 0:
                                     for p in nova_lista:
                                         for livro in self.livros:
-                                            if p in livro.get_autor():
+                                            if p in livro.get_autor() and livro not in self.livros_filtrados:
                                                 self.livros_filtrados.append(
                                                     livro)
 
@@ -302,16 +302,16 @@ class TelaEstoque(VerticalScroll):
                                     codigo_busca = codigo_busca[0:codigo_busca.index(
                                         ",")]
                                 if "-" in codigo_busca.split():
-                                    for palavraa in codigo_busca.split():
-                                        if palavraa != "-" and codigo_busca.index("-")+1 < len(codigo_busca) and palavraa not in nova_lista:
-                                            nova_lista.append(palavraa)
+                                    for palavraa in codigo_busca.split("-"):
+                                        if codigo_busca.index("-")+1 < len(codigo_busca) and palavraa not in nova_lista:
+                                            nova_lista.append(palavraa.strip())
                                 codigo_busca = int(codigo_busca)
                                 if len(self.livros_filtrados) > 0:
                                     livros_temp = []
                                     if len(nova_lista) > 0:
                                         for p in nova_lista:
                                             for livro in self.livros_filtrados:
-                                                if p == livro.get_codigo():
+                                                if p == livro.get_codigo() and livro not in livros_temp:
                                                     livros_temp.append(
                                                         livro)
                                     else:
@@ -324,7 +324,7 @@ class TelaEstoque(VerticalScroll):
                                     if len(nova_lista) > 0:
                                         for p in nova_lista:
                                             for livro in self.livros:
-                                                if p == livro.get_codigo():
+                                                if p == livro.get_codigo() and livro not in self.livros_filtrados:
                                                     self.livros_filtrados.append(
                                                         livro)
 

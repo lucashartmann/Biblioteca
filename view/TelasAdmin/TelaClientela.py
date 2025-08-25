@@ -58,9 +58,9 @@ class TelaClientela(Container):
                                 nome_busca = nome_busca[0:nome_busca.index(
                                     ",")]
                             if "-" in nome_busca.split():
-                                for palavraa in nome_busca.split():
-                                    if palavraa != "-" and nome_busca.index("-")+1 < len(nome_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa)
+                                for palavraa in nome_busca.split("-"):
+                                    if nome_busca.index("-")+1 < len(nome_busca) and palavraa not in nova_lista:
+                                        nova_lista.append(palavraa.split())
                             if len(self.leitores_filtrados) > 0:
                                 leitores_temp = []
                                 if len(nova_lista) > 0:
@@ -97,9 +97,9 @@ class TelaClientela(Container):
                                 email_busca = email_busca[0:email_busca.index(
                                     ",")]
                             if "-" in email_busca.split():
-                                for palavraa in email_busca.split():
-                                    if palavraa != "-" and email_busca.index("-")+1 < len(email_busca) and palavraa not in nova_lista:
-                                        nova_lista.append(palavraa)
+                                for palavraa in email_busca.split("-"):
+                                    if email_busca.index("-")+1 < len(email_busca) and palavraa not in nova_lista:
+                                        nova_lista.append(palavraa.split())
                             if len(self.leitores_filtrados) > 0:
                                 leitores_temp = []
                                 if len(nova_lista) > 0:

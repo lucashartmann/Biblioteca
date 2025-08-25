@@ -22,7 +22,7 @@ class App(App):
         "tela_leitor": TelaLeitor.TelaLeitor,
         "tela_estoque": TelaEstoqueCapas.TelaEstoqueCapas
     }
-
+    
     def on_mount(self):
         self.title = "Biblioteca"
         self.push_screen("tela_inicial")
