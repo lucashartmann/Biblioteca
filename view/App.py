@@ -9,7 +9,7 @@ class App(App):
 
     
     BINDINGS = {
-        Binding("s", "app.push_screen('tela_estoque')", "Tela Estoque"),
+        Binding("ctrl+l", "switch_screen('tela_estoque')", "Tela Estoque"),
         Binding("ctrl+s", "salvar", "Salvar")
     }
         

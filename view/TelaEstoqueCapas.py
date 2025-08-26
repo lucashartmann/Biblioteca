@@ -6,6 +6,7 @@ from textual.containers import VerticalScroll, HorizontalGroup
 from textual.binding import Binding
 from model import Init
 from textual.message import Message
+from textual.events import Key
 
 
 class RetiradaRealizada(Message):
@@ -19,7 +20,7 @@ class TelaEstoqueCapas(Screen):
     CSS_PATH = "css/TelaEstoqueCapas.tcss"
 
     BINDINGS = [
-        Binding("x", "app.switch_screen('tela_inicial')", "Voltar")
+        Binding("ctrl+l", "app.switch_screen('tela_inicial')", "Voltar")
     ]
 
     mapa_livros = Controller.get_livros_biblioteca()

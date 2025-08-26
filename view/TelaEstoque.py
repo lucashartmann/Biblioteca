@@ -23,7 +23,7 @@ class TelaEstoque(VerticalScroll):
             else:
                 yield Button("Remover", id="bt_remover")
             yield Button("Voltar", id="bt_voltar")
-        yield TextArea(disabled=True)
+        yield TextArea(read_only=True)
         with HorizontalGroup(id="container"):
             pass
 
@@ -68,6 +68,7 @@ class TelaEstoque(VerticalScroll):
                 lista_categorias.append(livro.get_genero())
         self.query_one(Select).set_options(
             [(categoria, categoria) for categoria in lista_categorias])
+        self.query_one(Select).prompt = "Escolha genêro"
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -119,13 +120,14 @@ class TelaEstoque(VerticalScroll):
             self.filtrou_select = True
             self.select_evento = evento
 
-    def filtro(self, palavras, index, filtro):
+    def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]
-        campo = f"get_{filtro}"
+        campo = f"get_{filtro_recebido}"
         nova_lista = []
+
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
-            if filtro in lista_filtros:
+            if filtro_recebido in lista_filtros:
                 try:
                     filtro = int(filtro)
                 except ValueError:
@@ -144,26 +146,44 @@ class TelaEstoque(VerticalScroll):
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for livro in self.livros_filtrados:
-                            if p in getattr(livro, campo)() and livro not in livros_temp:
-                                livros_temp.append(
-                                    livro)
+                            if type(filtro) == int:
+                                if p == getattr(livro, campo)() and livro not in livros_temp:
+                                    livros_temp.append(
+                                        livro)
+                            else:
+                                if p in getattr(livro, campo)() and livro not in livros_temp:
+                                    livros_temp.append(
+                                        livro)
                 else:
                     for livro in self.livros_filtrados:
-                        if filtro in getattr(livro, campo)() and livro not in livros_temp:
-                            livros_temp.append(livro)
+                        if type(filtro) == int:
+                            if filtro == getattr(livro, campo)() and livro not in livros_temp:
+                                livros_temp.append(livro)
+                        else:
+                            if filtro in getattr(livro, campo)() and livro not in livros_temp:
+                                livros_temp.append(livro)
                 if len(livros_temp) > 0:
                     self.livros_filtrados = livros_temp
             else:
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for livro in self.livros:
-                            if p in getattr(livro, campo)() and livro not in self.livros_filtrados:
-                                self.livros_filtrados.append(
-                                    livro)
+                            if type(filtro) == int:
+                                if p == getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                    self.livros_filtrados.append(
+                                        livro)
+                            else:
+                                if p in getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                    self.livros_filtrados.append(
+                                        livro)
                 else:
                     for livro in self.livros:
-                        if filtro in getattr(livro, campo)() and livro not in self.livros_filtrados:
-                            self.livros_filtrados.append(livro)
+                        if type(filtro) == int:
+                            if filtro == getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                self.livros_filtrados.append(livro)
+                        else:
+                            if filtro in getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                self.livros_filtrados.append(livro)
 
     def atualizar(self):
         resultado = self.query_one(Pretty)

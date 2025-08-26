@@ -9,9 +9,9 @@ class TelaClientela(Container):
     def compose(Container):
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input()
-            yield Button("Cadastrar", id="bt_cadastrar")
             yield Button("Remover", id="bt_remover")
-        yield TextArea(disabled=True)
+            yield Button("Voltar", id="bt_voltar")
+        yield TextArea(read_only=True)
         with HorizontalGroup(id="container"):
             pass
 

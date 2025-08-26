@@ -18,7 +18,7 @@ class TelaDevolucao(VerticalScroll):
             yield Input()
             yield Button("Devolver", id="bt_devolver")
             yield Button("Voltar", id="bt_voltar")
-        yield TextArea(disabled=True)
+        yield TextArea(read_only=True)
         with HorizontalGroup(id="container"):
             pass
 

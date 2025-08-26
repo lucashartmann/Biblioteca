@@ -31,7 +31,7 @@ class TelaAdmin(Screen):
         tela_clientela.on_mount()
 
     def on_mount(self):
-        self.sub_title = "Tela Inicial"
+        self.sub_title = "Tela Administrador"
 
     def on_cadastro_leitor_realizado(self):
         tela_clientela = self.query_one(TelaClientela.TelaClientela)

@@ -20,7 +20,7 @@ class TelaLeitor(Screen):
         yield Footer()
 
     def on_mount(self):
-        self.sub_title = "Tela Inicial"
+        self.sub_title = "Tela Leitor"
 
     def on_devolucao_realizada(self):
         tela_devolucao = self.query_one(TelaDevolucao.TelaDevolucao)

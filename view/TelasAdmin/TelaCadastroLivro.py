@@ -17,19 +17,23 @@ class TelaCadastroLivro(Container):
     valor_select = ""
 
     def compose(self):
-        yield Label("ID do Livro:", id="lb_id")
-        yield Input(placeholder="ID aqui", id="input_id")
+        yield Label("Codigo do Livro:", id="lb_id")
+        yield Input(placeholder="Codigo aqui", id="input_id")
         yield Label("Titulo:", id="lbl_titulo")
         yield Input(placeholder="Titulo aqui", id="inpt_titulo")
         yield Label("Autor:", id="lbl_autor")
         yield Input(placeholder="Autor aqui", id="inpt_autor")
         yield Label("Quantidade:", id="lbl_quant")
         yield Input(placeholder="Quantidade aqui", id="inpt_quant")
+        # yield Label("Caminho da Capa:")
+        # yield Input(placeholder="Caminho aqui")
+        # yield Input(placeholder="Largura aqui")
+        # yield Input(placeholder="Altura aqui")
         yield Select([("genero", 'genero')], id="slct_genero")
         yield HorizontalGroup(id="hg_genero")
         yield Select([("Cadastrar", 'Cadastrar'), ("Editar", "Editar"), ("Remover", "Remover")], id="select_operacao")
         yield Button("Limpar", id="bt_limpar")
-        yield Button("Cadastrar", id="bt_cadastrar")
+        yield Button("Executar", id="bt_executar")
         yield Button("Voltar", id="bt_voltar")
 
     def on_button_pressed(self, evento: Button.Pressed):
@@ -49,28 +53,27 @@ class TelaCadastroLivro(Container):
                             self.query_one("#inpt_genero").remove()
                         self.cadastro()
 
-                    case "Editar":
-                        if self.montou:
-                            self.montou = False
-                            self.query_one("#lbl_genero").remove()
-                            self.query_one("#inpt_genero").remove()
-                        input_id = self.query_one("#ipt_id", Input).value
+                    case "Editar":                           
+                        input_id = self.query_one("#input_id", Input).value
                         dados = []
                         for input in self.query(Input)[1:]:
                             dados.append(input.value.upper())
                         if self.valor_select != "Novo Genero":
-                            if self.query_one(Select).is_blank():
+                            if self.query_one("#slct_genero", Select).is_blank():
                                 dados.append("")
                             else:
-                                dados.append(self.query_one(Select).value)
+                                dados.append(self.query_one(
+                                    "#slct_genero", Select).value)
                         elif self.montou:
                             dados.append(self.query_one(
                                 "#inpt_genero", Input).value)
-                        else:
-                            dados.append("")
+                            self.montou = False
+                            self.query_one("#lbl_genero").remove()
+                            self.query_one("#inpt_genero").remove()
+                            
                         mensagem = Controller.editar_livro(input_id, dados)
                         self.notify(str(mensagem), markup=False)
-                        self.screen.on_mount()
+                        self.on_mount()
                         self.post_message(CadastroRealizado(self))
 
                     case "Remover":
@@ -78,6 +81,10 @@ class TelaCadastroLivro(Container):
                         mensagem = Controller.excluir_livro(input_id)
                         self.notify(str(mensagem), markup=False)
                         self.post_message(CadastroRealizado(self))
+                        self.on_mount()
+
+                    case _:
+                        self.notify("Nenhuma opção de operação selecionada")
 
     montou = False
     valor_select = ""
@@ -91,6 +98,9 @@ class TelaCadastroLivro(Container):
         if "Novo Genero" not in lista_generos:
             lista_generos.append("Novo Genero")
         select = self.query_one("#slct_genero", Select)
+        select2 = self.query_one("#select_operacao", Select)
+        select2.prompt = "Escolha operação"
+        select.prompt = "Escolha genêro"
         select.set_options(
             [(genero, genero) for genero in lista_generos])
 
@@ -114,18 +124,19 @@ class TelaCadastroLivro(Container):
 
     def cadastro(self):
         dados = []
-        for input in self.query(Input):
+        for input in self.query(Input)[1:]:
             dados.append(input.value.upper())
         if self.valor_select != "Novo Genero":
-            if self.query_one(Select).is_blank():
+            if self.query_one("#slct_genero", Select).is_blank():
                 dados.append("")
             else:
-                dados.append(self.query_one(Select).value)
+                dados.append(self.query_one("#slct_genero", Select).value)
         elif self.montou:
             dados.append(self.query_one("#inpt_genero", Input).value)
         else:
             dados.append("")
+        self.notify(str(dados))
         resultado = Controller.cadastrar_livro(dados)
         self.notify(str(resultado), markup=False)
-        self.screen.on_mount()
+        self.on_mount()
         self.post_message(CadastroRealizado(self))

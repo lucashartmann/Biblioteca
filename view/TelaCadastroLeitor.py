@@ -67,7 +67,7 @@ class TelaCadastroLeitor(Container):
 
     def cadastro(self):
         dados = []
-        for input in self.query(Input):
+        for input in self.query(Input)[1:]:
             dados.append(input.value.upper())
         resultado = Controller.cadastrar_leitor(dados)
         self.notify(str(resultado), markup=False)

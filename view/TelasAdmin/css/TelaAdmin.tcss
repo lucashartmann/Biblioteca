@@ -1,6 +1,59 @@
+
+TelaAdmin {
+    background: rgba(45, 145, 163, 1);
+    color: black;
+}
+
+TelaAdmin Footer {
+    background: rgba(30, 91, 102, 1);
+}
+
+TelaAdmin Header {
+    background: rgba(30, 91, 102, 1);
+}
+
+TelaAdmin Input {
+    color: white;
+    background:black;
+}
+
+TelaAdmin Button {
+    background:black;
+    color: white;
+}
+
+TelaAdmin Label {
+    background: white;
+    margin: 1;
+}
+
+TelaAdmin TabbedContent Static {
+    color: black;
+}
+
+TelaAdmin TextArea.disabled {
+    color: black;
+}
+
+TelaAdmin Pretty {
+    color: rgba(0, 90, 30, 1);
+    background: black;
+    margin: 1;
+    height: 100%;
+}
+
+TelaAdmin Select Static{
+    color: white;
+}
+
+TelaAdmin Select Container {
+    background: white;
+}
+
 # TelaCadastroLivro
 
 TelaCadastroLivro {
+    width: 100%;
     layout: grid;
     align: center middle;
     grid-size: 4 6;
@@ -26,16 +79,20 @@ TelaCadastroLivro #inpt_genero{
 
 # TelaClientela
 
+TelaClientela  {
+    width: 100%;
+}
+
 TelaClientela TextArea {
     height: 5;
 }
 
-TelaClientela Checkbox {
-    margin: 1;
+TelaClientela #bt_remover {
+    margin-right: 1;
 }
 
 TelaClientela Input {
-    width: 90%;
+    width: 84%;
 }
 
 TelaClientela #hg_pesquisa {
