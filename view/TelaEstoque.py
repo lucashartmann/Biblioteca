@@ -40,27 +40,16 @@ class TelaEstoque(VerticalScroll):
             quant = len(self.livros_filtrados)
         else:
             quant = len(self.livros)
-        self.query_one(TextArea).text = f"Quantidade de livros: {quant}"
+        self.query_one(TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, genero: distopia' \n\nQuantidade de livros: {quant}"
 
     def on_mount(self):
-        livros_str = []
-        if Init.usuario_leitor:
-            lista_usuario = []
-            for livro in self.livros:
-                if livro.is_disponivel():
-                    lista_usuario.append(livro)
-            self.livros = lista_usuario
-            for livro in self.livros:
-                if livro.is_disponivel():
-                    livro_str = str(livro).split(",")[:-1]
-                    livros_str.append(livro_str)
-        else:
-            livros_str = [str(livro) for livro in self.livros]
+        emprestimos_str = []
         if self.montou:
-            self.query_one(Pretty).update(livros_str)
+            self.query_one(Pretty).update(emprestimos_str)
         else:
-            self.mount(Pretty(livros_str))
+            self.mount(Pretty(emprestimos_str))
             self.montou = True
+        self.atualizar()
         self.setup_dados()
         lista_categorias = []
         for livro in self.livros:
@@ -127,12 +116,7 @@ class TelaEstoque(VerticalScroll):
 
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
-            if filtro_recebido in lista_filtros:
-                try:
-                    filtro = int(filtro)
-                except ValueError:
-                    self.notify("Valor Inválido")
-                    return
+
             if "," in filtro:
                 filtro = filtro[0:filtro.index(
                     ",")]
@@ -140,6 +124,13 @@ class TelaEstoque(VerticalScroll):
                 for palavraa in filtro.split("-"):
                     if filtro.index("-")+1 < len(filtro) and palavraa not in nova_lista:
                         nova_lista.append(palavraa.strip())
+
+            if filtro_recebido in lista_filtros:
+                try:
+                    filtro = int(filtro)
+                except ValueError:
+                    self.notify("Valor Inválido")
+                    return
 
             if len(self.livros_filtrados) > 0:
                 livros_temp = []
@@ -187,11 +178,23 @@ class TelaEstoque(VerticalScroll):
 
     def atualizar(self):
         resultado = self.query_one(Pretty)
+        livros_str = []
+        lista = self.livros
         if len(self.livros_filtrados) > 0:
-            livros_str = [str(livro)
-                          for livro in self.livros_filtrados]
+            lista = self.livros_filtrados
+
+        if Init.usuario_leitor:
+            lista_usuario = []
+            for livro in lista:
+                if livro.is_disponivel():
+                    lista_usuario.append(livro)
+            lista = lista_usuario
+            for livro in lista:
+                if livro.is_disponivel():
+                    livro_str = str(livro).split(",")[:-1]
+                    livros_str.append(livro_str)
         else:
-            livros_str = [str(livro) for livro in self.livros]
+            livros_str = [str(livro) for livro in lista]
         self.setup_dados()
         resultado.update(livros_str)
 

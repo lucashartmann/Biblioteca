@@ -59,7 +59,6 @@ class TelaClientela(Container):
             self.setup_dados()
 
     def filtro(self, palavras, index, filtro):
-        lista_filtros = []
         campo = f"get_{filtro}"
         nova_lista = []
         if index + 1 < len(palavras):

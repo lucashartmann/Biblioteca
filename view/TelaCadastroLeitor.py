@@ -60,8 +60,12 @@ class TelaCadastroLeitor(Container):
                             input_email.upper(), dados)
                         self.notify(str(mensagem), markup=False)
                         self.post_message(CadastroLeitorRealizado(self))
+                        if Init.usuario_leitor:
+                            self.on_mount()
                     case "Cadastrar":
                         self.cadastro()
+                        if Init.usuario_leitor:
+                            self.on_mount()
                     case _:
                         self.notify("Nenhuma opção de operação selecionada")
 

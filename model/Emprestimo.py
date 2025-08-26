@@ -3,11 +3,20 @@ import random
 
 
 class Emprestimo:
+    id = 0
 
     def __init__(self, livro, leitor):
         self.livro = livro
         self.leitor = leitor
         self.data_para_devolucao = self.calcular_data_para_devolucao()
+        self.id = self.gerar_id()
+
+    def gerar_id(self):
+        Emprestimo.id += 1
+        return Emprestimo.id
+
+    def get_id(self):
+        return self.id
 
     def get_livro(self):
         return self.livro
@@ -35,4 +44,4 @@ class Emprestimo:
         return data_formatada
 
     def __str__(self):
-        return f"Emprestimo [Livro = {self.get_livro()}, Leitor = {self.get_leitor()}, Data para Devolução = {self.get_data_para_devolucao()}]"
+        return f"Emprestimo [ID = {self.get_id()}, Livro = {self.get_livro().__str__().split(",")[:-2]}, Leitor = {self.get_leitor()}, Data para Devolução = {self.get_data_para_devolucao()}]"

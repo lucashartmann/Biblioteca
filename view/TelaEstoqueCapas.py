@@ -14,6 +14,7 @@ class RetiradaRealizada(Message):
         super().__init__()
         self.sender = sender
 
+# assets/c4.jpg 
 
 class TelaEstoqueCapas(Screen):
 
@@ -101,13 +102,14 @@ class TelaEstoqueCapas(Screen):
                 retirada = Controller.emprestar(
                     cod_livro, Init.leitor1.get_email())
                 self.notify(retirada)
-                self.on_mount()
+                self.atualizar_capas()
                 self.post_message(RetiradaRealizada(self))
             case "bt_remover":
                 input_id = self.query_one(Input).value
                 mensagem = Controller.excluir_livro(input_id)
                 self.notify(str(mensagem), markup=False)
                 self.post_message(RetiradaRealizada(self))
+                self.atualizar_capas()
 
     @on(ListView.Highlighted, "#lst_item")
     def item_selecionado(self) -> None:
@@ -148,18 +150,14 @@ class TelaEstoqueCapas(Screen):
             self.select_evento = evento
             self.atualizar_capas()
 
-    def filtro(self, palavras, index, filtro):
+    def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]
-        campo = f"get_{filtro}"
+        campo = f"get_{filtro_recebido}"
         nova_lista = []
+
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
-            if filtro in lista_filtros:
-                try:
-                    filtro = int(filtro)
-                except ValueError:
-                    self.notify("Valor Inválido")
-                    return
+
             if "," in filtro:
                 filtro = filtro[0:filtro.index(
                     ",")]
@@ -168,31 +166,56 @@ class TelaEstoqueCapas(Screen):
                     if filtro.index("-")+1 < len(filtro) and palavraa not in nova_lista:
                         nova_lista.append(palavraa.strip())
 
+            if filtro_recebido in lista_filtros:
+                try:
+                    filtro = int(filtro)
+                except ValueError:
+                    self.notify("Valor Inválido")
+                    return
+
             if len(self.livros_filtrados) > 0:
                 livros_temp = []
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for livro in self.livros_filtrados:
-                            if p in getattr(livro, campo)() and livro not in livros_temp:
-                                livros_temp.append(
-                                    livro)
+                            if type(filtro) == int:
+                                if p == getattr(livro, campo)() and livro not in livros_temp:
+                                    livros_temp.append(
+                                        livro)
+                            else:
+                                if p in getattr(livro, campo)() and livro not in livros_temp:
+                                    livros_temp.append(
+                                        livro)
                 else:
                     for livro in self.livros_filtrados:
-                        if filtro in getattr(livro, campo)():
-                            livros_temp.append(livro)
+                        if type(filtro) == int:
+                            if filtro == getattr(livro, campo)() and livro not in livros_temp:
+                                livros_temp.append(livro)
+                        else:
+                            if filtro in getattr(livro, campo)() and livro not in livros_temp:
+                                livros_temp.append(livro)
                 if len(livros_temp) > 0:
                     self.livros_filtrados = livros_temp
             else:
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for livro in self.mapa_livros.values():
-                            if p in getattr(livro, campo)() and livro not in self.livros_filtrados:
-                                self.livros_filtrados.append(
-                                    livro)
+                            if type(filtro) == int:
+                                if p == getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                    self.livros_filtrados.append(
+                                        livro)
+                            else:
+                                if p in getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                    self.livros_filtrados.append(
+                                        livro)
                 else:
                     for livro in self.mapa_livros.values():
-                        if filtro in getattr(livro, campo)():
-                            self.livros_filtrados.append(livro)
+                        if type(filtro) == int:
+                            if filtro == getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                self.livros_filtrados.append(livro)
+                        else:
+                            if filtro in getattr(livro, campo)() and livro not in self.livros_filtrados:
+                                self.livros_filtrados.append(livro)
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value.upper()

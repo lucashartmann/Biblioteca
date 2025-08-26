@@ -15,29 +15,28 @@ class Livro:
 
     def get_largura_capa(self):
         return self.largura_capa
-        
+
     def get_altura_capa(self):
         return self.altura_capa
-        
+
     def set_largura_capa(self, novo_largura_capa):
         self.largura_capa = novo_largura_capa
-    
+
     def set_altura_capa(self, novo_altura_capa):
         self.altura_capa = novo_altura_capa
 
     def get_caminho_capa(self):
-       return self.caminho_capa
+        return self.caminho_capa
 
     def set_caminho_capa(self, novo_caminho):
-       self.caminho_capa = novo_caminho
-    
+        self.caminho_capa = novo_caminho
 
     def gerar_cod(self):
         Livro.cod += 1
         return Livro.cod
-    
+
     def get_capa(self):
-        return self.capa;
+        return self.capa
 
     def get_autor(self):
         return self.autor

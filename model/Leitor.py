@@ -22,6 +22,12 @@ class Leitor:
             if emprestimo.get_livro().get_codigo() == cod_livro:
                 return emprestimo
         return None
+    
+    def get_emprestimo_por_id(self, id_emprestimo):
+        for emprestimo in self.emprestimos:
+            if emprestimo.get_id() == id_emprestimo:
+                return emprestimo
+        return None
 
     def get_lista_emprestimos(self):
         return self.emprestimos

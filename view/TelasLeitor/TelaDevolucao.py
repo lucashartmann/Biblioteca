@@ -15,7 +15,7 @@ class TelaDevolucao(VerticalScroll):
 
     def compose(self):
         with HorizontalGroup(id="hg_pesquisa"):
-            yield Input()
+            yield Input(placeholder="ID do empréstimo aqui")
             yield Button("Devolver", id="bt_devolver")
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(read_only=True)
@@ -36,18 +36,17 @@ class TelaDevolucao(VerticalScroll):
             quant = len(self.emprestimos_filtrados)
         else:
             quant = len(self.emprestimos)
-        self.query_one(TextArea).text = f"Quantidade de Empréstimos: {quant}"
+        self.query_one(
+            TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, nome: lucas' \n\nQuantidade de Empréstimos: {quant}"
 
     def on_mount(self):
         emprestimos_str = []
-        for emprestimo in self.emprestimos:
-            emprestimo_str = str(emprestimo).split(",")[:-1]
-            emprestimos_str.append(emprestimo_str)
         if self.montou:
             self.query_one(Pretty).update(emprestimos_str)
         else:
             self.mount(Pretty(emprestimos_str))
             self.montou = True
+        self.atualizar()
         self.setup_dados()
 
     def on_button_pressed(self, evento: Button.Pressed):
@@ -63,24 +62,19 @@ class TelaDevolucao(VerticalScroll):
 
     def atualizar(self):
         resultado = self.query_one(Pretty)
+        emprestimos_str = []
+        lista = self.emprestimos
         if len(self.emprestimos_filtrados) > 0:
-            emprestimos_str = []
-            for emprestimo in self.emprestimos_filtrados:
-                emprestimo_str = str(emprestimo).split(",")[:-1]
-                emprestimos_str.append(emprestimo_str)
-            resultado.update(emprestimos_str)
-            self.setup_dados()
-        else:
-            emprestimos_str = []
-            for emprestimo in self.emprestimos:
-                emprestimo_str = str(emprestimo).split(",")[:-1]
-                emprestimos_str.append(emprestimo_str)
-            resultado.update(emprestimos_str)
-            self.setup_dados()
+            lista = self.emprestimos_filtrados
+        for emprestimo in lista:
+            emprestimo_str = str(emprestimo).split(",")[:-1]
+            emprestimos_str.append(emprestimo_str)
+        resultado.update(emprestimos_str)
+        self.setup_dados()
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]
-        lista_filtros_leitor = ["nome, email"]
+        lista_filtros_leitor = ["nome", "email"]
         campo = f"get_{filtro_recebido}"
         nova_lista = []
 
@@ -96,18 +90,18 @@ class TelaDevolucao(VerticalScroll):
 
             if filtro_recebido in lista_filtros:
                 try:
-                        filtro = filtro.strip()
-                        filtro = int(filtro)
+                    filtro = filtro.strip()
+                    filtro = int(filtro)
                 except ValueError:
-                        self.notify("Valor Inválido")
-                        return
+                    self.notify("Valor Inválido")
+                    return
 
             if len(self.emprestimos_filtrados) > 0:
                 emprestimos_temp = []
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for emprestimo in self.emprestimos_filtrados:
-                            if filtro in lista_filtros_leitor:
+                            if filtro_recebido in lista_filtros_leitor:
                                 if type(filtro) == int:
                                     if p == getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
                                         emprestimos_temp.append(
@@ -127,7 +121,7 @@ class TelaDevolucao(VerticalScroll):
                                             emprestimo)
                 else:
                     for emprestimo in self.emprestimos_filtrados:
-                        if filtro in lista_filtros_leitor:
+                        if filtro_recebido in lista_filtros_leitor:
                             if type(filtro) == int:
                                 if p in getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
                                     emprestimos_temp.append(
@@ -149,14 +143,14 @@ class TelaDevolucao(VerticalScroll):
                 if len(nova_lista) > 0:
                     for p in nova_lista:
                         for emprestimo in self.emprestimos:
-                            if filtro in lista_filtros_leitor:
+                            if filtro_recebido in lista_filtros_leitor:
                                 if type(filtro) == int:
-                                    if p == getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
-                                        emprestimos_temp.append(
+                                    if p == getattr(emprestimo.get_leitor(), campo)() and emprestimo not in self.emprestimos_filtrados:
+                                        self.emprestimos_filtrados.append(
                                             emprestimo)
                                 else:
-                                    if p in getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
-                                        emprestimos_temp.append(
+                                    if p in getattr(emprestimo.get_leitor(), campo)() and emprestimo not in self.emprestimos_filtrados:
+                                        self.emprestimos_filtrados.append(
                                             emprestimo)
                             else:
                                 if type(filtro) == int:
@@ -169,22 +163,22 @@ class TelaDevolucao(VerticalScroll):
                                             emprestimo)
                 else:
                     for emprestimo in self.emprestimos:
-                        if filtro in lista_filtros_leitor:
+                        if filtro_recebido in lista_filtros_leitor:
                             if type(filtro) == int:
-                                if p == getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
-                                    emprestimos_temp.append(
-                                        emprestimo)
-                            else:
-                                if p in getattr(emprestimo.get_leitor(), campo)() and emprestimo not in emprestimos_temp:
-                                    emprestimos_temp.append(
-                                        emprestimo)
-                        else:
-                            if type(filtro) is not str:
-                                if filtro == getattr(emprestimo.get_livro(), campo)():
+                                if filtro == getattr(emprestimo.get_leitor(), campo)() and emprestimo not in self.emprestimos_filtrados:
                                     self.emprestimos_filtrados.append(
                                         emprestimo)
                             else:
-                                if filtro in getattr(emprestimo.get_livro(), campo)():
+                                if filtro in getattr(emprestimo.get_leitor(), campo)() and emprestimo not in self.emprestimos_filtrados:
+                                    self.emprestimos_filtrados.append(
+                                        emprestimo)
+                        else:
+                            if type(filtro) == int:
+                                if filtro == getattr(emprestimo.get_livro(), campo)() and emprestimo not in self.emprestimos_filtrados:
+                                    self.emprestimos_filtrados.append(
+                                        emprestimo)
+                            else:
+                                if filtro in getattr(emprestimo.get_livro(), campo)() and emprestimo not in self.emprestimos_filtrados:
                                     self.emprestimos_filtrados.append(
                                         emprestimo)
 

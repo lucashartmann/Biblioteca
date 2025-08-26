@@ -1,22 +1,45 @@
-TelaEstoqueCapas  Input{
-        width: 70%;
+TelaEstoqueCapas {
+        background: rgba(4, 43, 7, 1);
 }
+
+TelaEstoqueCapas Footer {
+    background: rgba(9, 66, 14, 1);
+
+}
+
+TelaEstoqueCapas Header {
+    background: rgba(9, 66, 14, 1);
+}
+
+TelaEstoqueCapas Input{
+        width: 70%;
+        background:black;
+        color: white;
+}
+
+TelaEstoqueCapas #hg_pesquisa {
+    margin: 1;
+}
+
+TelaEstoqueCapas Select Static{
+    color: white;
+}
+
 
 ListView {
         layout: grid;
         grid-size: 3;
         grid-gutter: 1;
-        background: rgb(100, 100, 100);
+        background: rgba(4, 43, 7, 1);
+        align: center middle;
+        
 }
     
 ListItem {
-        text-align: center;
         background: rgb(255, 255, 255);
         height: 99%;
-        align: center middle;
-        margin: 1;
-        margin-left: 11;
         color: green;
+        align: center middle;
 }
     
 .item{

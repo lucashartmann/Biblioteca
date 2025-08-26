@@ -1,3 +1,54 @@
+TelaLeitor {
+    background: rgba(163, 45, 45, 1);
+    color: black;
+}
+
+TelaLeitor Footer {
+    background: rgba(109, 35, 35, 1);
+
+}
+
+TelaLeitor Header {
+    background: rgba(109, 35, 35, 1);
+}
+
+
+TelaLeitor Input {
+    color: white;
+    background:black;
+}
+
+TelaLeitor Button {
+    background:black;
+    color: white;
+}
+
+TelaLeitor Label {
+    background: white;
+    margin: 1;
+}
+
+TelaLeitor TabbedContent Static {
+    color: black;
+}
+
+TelaLeitor TextArea {
+    color: white;
+    background: black;
+}
+
+TelaLeitor Pretty {
+    background: black;
+    margin: 1;
+    height: 100%;
+}
+
+TelaLeitor Select Static{
+    color: white;
+}
+
+# TelaDevolucao
+
 TelaDevolucao TextArea {
     height: 5;
 }
@@ -10,3 +61,6 @@ TelaDevolucao #hg_pesquisa {
     margin: 1;
 }
 
+TelaDevolucao #bt_devolver {
+    margin-right: 1;
+}

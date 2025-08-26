@@ -4,36 +4,46 @@ import sys
 
 comando = sys.argv[1:]
 
+# Comandos:
+# python Main.py cadastrar_leitor "pedro" "pedro@email.com"
+# python Main.py editar_leitor "lucas@email.com" "pedro" "pedro@email.com"
+# python Main.py remover_leitor "lucas@email.com"
+# python Main.py devolver 1 "lucas@email.com"
+# python Main.py retirar 1 "lucas@email.com"
+# python Main.py cadastrar_livro "Maus" "Art Spiegelman" 2 "HQ"
+# python Main.py editar_livro 1 "Maus" "Art Spiegelman" 2 "HQ"
+# python Main.py remover_livro 1
+
 
 def menu_cmd(comando):
     match comando:
-        case ["cadastrar_leitor", nome, cpf, rg, telefone, endereco, email]:
-            dados = [nome, cpf, rg, telefone, endereco, email]
-            Controller.cadastrar_leitor(dados)
+        case ["cadastrar_leitor", nome, email]:
+            dados = [nome.upper(), email.upper()]
+            print(Controller.cadastrar_leitor(dados))
 
         case ["editar_leitor", email, novo_nome, novo_email]:
-            dados = [novo_nome, novo_email]
-            Controller.editar_leitor(email, dados)
+            dados = [novo_nome.upper(), novo_email.upper()]
+            print(Controller.editar_leitor(email, dados))
 
         case ["remover_leitor", email]:
-            Controller.excluir_leitor(email)
+            print(Controller.excluir_leitor(email.upper()))
 
         case ["devolver", cod_livro, email]:
-            Controller.devolver(cod_livro, email)
+            print(Controller.devolver(cod_livro, email.upper()))
 
         case ["retirar", cod_livro, email]:
-            Controller.emprestar(cod_livro, email)
+            print(Controller.emprestar(cod_livro, email.upper()))
 
-        case ["cadastrar_livro", titulo, autor, genero, quant]:
-            dados = [titulo, autor, genero, quant]
-            Controller.cadastrar_livro(dados)
+        case ["cadastrar_livro", titulo, autor, quant, genero]:
+            dados = [titulo.upper(), autor.upper(), genero.upper(), quant]
+            print(Controller.cadastrar_livro(dados))
 
-        case ["editar_livro", cod_livro, titulo, autor, genero, quant]:
-            dados = [titulo, autor, genero, quant]
-            Controller.editar_livro(cod_livro, dados)
-            
+        case ["editar_livro", cod_livro, titulo, autor, quant, genero]:
+            dados = [titulo.upper(), autor.upper(), genero.upper(), quant]
+            print(Controller.editar_livro(cod_livro, dados))
+
         case ["remover_livro", cod_livro]:
-            Controller.excluir_livro(cod_livro)
+            print(Controller.excluir_livro(cod_livro))
 
 
 if __name__ == "__main__":

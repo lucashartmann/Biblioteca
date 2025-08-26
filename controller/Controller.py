@@ -59,6 +59,7 @@ def gerar_pixel(caminho, largura, altura):
             return None
     return None
 
+
 if not Init.carregar_biblioteca:
     Init.livro1.set_capa(gerar_pixel("assets/c0.jpg", 30, 30))
     Init.livro2.set_capa(gerar_pixel("assets/c1.jpg", 30, 30))
@@ -100,6 +101,12 @@ def get_leitores_biblioteca():
 
 
 def emprestar(cod_livro, email):
+    if cod_livro == "":
+        return "ERRO. Código do livro está vazio"
+
+    if email == "":
+        return "ERRO. Email do leitor está vazio"
+
     try:
         cod_livro = int(cod_livro)
     except:
@@ -126,40 +133,42 @@ def emprestar(cod_livro, email):
         return f"Erro ao emprestar livro '{livro.get_titulo()}', livro não está disponivel"
 
 
-def devolver(cod_livro, email):
+def devolver(id_emprestimo, email):
+    if id_emprestimo == "":
+        return "ERRO. ID do Empréstimo está vazio"
     try:
-        cod_livro = int(cod_livro)
+        id_emprestimo = int(id_emprestimo)
     except:
-        return f"ERRO ao converter {cod_livro}"
+        return f"ERRO ao converter {id_emprestimo}"
 
-    livro = Init.biblioteca.get_livro_por_cod(cod_livro)
     leitor = Init.biblioteca.get_leitor_por_email(email)
-
-    if not livro:
-        return f"Erro, livro '{cod_livro}' não existe"
 
     if not leitor:
         return f"Erro, leitor '{email}' não existe"
 
-    emprestimo = leitor.get_emprestimo_por_livro(cod_livro)
+    emprestimo = leitor.get_emprestimo_por_id(id_emprestimo)
+    livro = emprestimo.get_livro()
 
     if not emprestimo:
-        return f"Erro, empréstimo não existe"
+        return f"Erro, empréstimo com id '{id_emprestimo}' não existe"
 
     devolucao = Init.biblioteca.devolver(emprestimo)
 
     if devolucao:
         return f"Livro '{livro.get_titulo()}' devolvido com sucesso"
     else:
-        return f"Erro ao devolver livro '{livro.get_titulo()}'"
+        return f"Erro ao devolver livro '{livro.get_titulo()}' do empréstimo '{id_emprestimo}'"
 
 
 def cadastrar_livro(dados):
     titulo = dados[0]
     autor = dados[1]
     quant = dados[2]
-    genero = dados[3]
-    
+    caminho_capa = dados[3]
+    largura_capa = dados[4]
+    altura_capa = dados[5]
+    genero = dados[-1]
+
     if titulo == "":
         return "Erro, titulo vazio"
 
@@ -178,6 +187,55 @@ def cadastrar_livro(dados):
         return f"Erro ao converter '{quant}'"
 
     livro = Livro.Livro(titulo, autor, genero, quant)
+
+    if caminho_capa != "" and largura_capa != "" and altura_capa != "":
+        try:
+            altura_capa = int(altura_capa)
+            largura_capa = int(largura_capa)
+            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
+            if gerar_capa:
+                livro.set_capa(gerar_capa)
+                livro.set_largura_capa(largura_capa)
+                livro.set_altura_capa(altura_capa)
+            else:
+                return "Erro ao gerar capa"
+        except:
+            return f"Erro ao converter '{altura_capa}' e '{largura_capa}'"
+
+    if caminho_capa != "" and largura_capa == "" and altura_capa == "":
+        if livro.get_altura_capa() and livro.get_largura_capa():
+            gerar_capa = gerar_pixel(
+                caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
+        else:
+            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
+        if gerar_capa:
+            livro.set_capa(gerar_capa)
+        else:
+            return "Erro ao gerar capa"
+
+    if caminho_capa == "" and largura_capa != "" and altura_capa != "":
+        try:
+            largura_capa = int(largura_capa)
+            altura_capa = int(altura_capa)
+            if livro.get_caminho_capa():
+                gerar_capa = gerar_pixel(
+                    livro.get_caminho_capa(), largura_capa, altura_capa)
+                if gerar_capa:
+                    livro.set_capa(gerar_capa)
+                    livro.set_largura_capa(largura_capa)
+                    livro.set_altura_capa(altura_capa)
+                else:
+                    return "Erro ao gerar capa"
+            else:
+                return "Capa precisa ter um caminho"
+        except:
+            return f"Erro ao converter '{largura_capa}' e '{altura_capa}'"
+
+    if caminho_capa == "" and largura_capa != "" and altura_capa == "":
+        return "Altura não pode estar vazia"
+
+    if caminho_capa == "" and largura_capa == "" and altura_capa != "":
+        return "Largura não pode estar vazia"
 
     if not livro:
         return "ERRO ao criar livro"
@@ -212,7 +270,23 @@ def cadastrar_leitor(dados):
     return "ERRO ao cadastrar leitor"
 
 
+def excluir_leitor(email):
+
+    if email == "":
+        return "ERRO. Email do leitor está vazio"
+
+    remocao = Init.biblioteca.remove_leitor(email)
+
+    if remocao:
+        return f"Leitor '{email}' removido com sucesso"
+    else:
+        return f"Erro, leitor '{email}' não existe"
+
+
 def excluir_livro(cod_livro):
+    if cod_livro == "":
+        return "ERRO. Código do livro está vazio"
+
     try:
         cod_livro = int(cod_livro)
     except:
@@ -226,16 +300,11 @@ def excluir_livro(cod_livro):
         return f"Erro, não existe livro com código '{cod_livro}'"
 
 
-def excluir_leitor(email):
-    remocao = Init.biblioteca.remove_leitor(email)
-
-    if remocao:
-        return f"Leitor '{email}' removido com sucesso"
-    else:
-        return f"Erro, leitor '{email}' não existe"
-
-
 def editar_leitor(email, dados):
+
+    if email == "":
+        return "ERRO. Email do leitor está vazio"
+
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not leitor:
@@ -261,6 +330,9 @@ def editar_leitor(email, dados):
 
 
 def editar_livro(cod_livro, dados):
+    if cod_livro == "":
+        return "ERRO. Código do livro está vazio"
+
     try:
         cod_livro = int(cod_livro)
     except:
@@ -276,9 +348,9 @@ def editar_livro(cod_livro, dados):
     titulo = dados[0]
     autor = dados[1]
     quant = dados[2]
-    # caminho_capa = dados[3]
-    # largura_capa = dados[4]
-    # altura_capa = dados[5]
+    caminho_capa = dados[3]
+    largura_capa = dados[4]
+    altura_capa = dados[5]
     genero = dados[-1]
 
     if titulo != "":
@@ -298,56 +370,56 @@ def editar_livro(cod_livro, dados):
         except:
             mensagem += f"Erro ao converter '{quant}'"
 
-    # if caminho_capa != "" and largura_capa != "" and altura_capa != "":
-    #     try:
-    #         altura_capa = int(altura_capa)
-    #         largura_capa = int(largura_capa)
-    #         gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-    #         if gerar_capa:
-    #             livro.set_capa(gerar_capa)
-    #             livro.set_largura_capa(largura_capa)
-    #             livro.set_altura_capa(altura_capa)
-    #             mensagem += f"Capa editada\n"
-    #         else:
-    #             mensagem += "Erro ao gerar capa"
-    #     except:
-    #         mensagem += f"Erro ao converter '{altura_capa}' e '{largura_capa}'"
+    if caminho_capa != "" and largura_capa != "" and altura_capa != "":
+        try:
+            altura_capa = int(altura_capa)
+            largura_capa = int(largura_capa)
+            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
+            if gerar_capa:
+                livro.set_capa(gerar_capa)
+                livro.set_largura_capa(largura_capa)
+                livro.set_altura_capa(altura_capa)
+                mensagem += f"Capa editada\n"
+            else:
+                mensagem += "Erro ao gerar capa"
+        except:
+            mensagem += f"Erro ao converter '{altura_capa}' e '{largura_capa}'"
 
-    # if caminho_capa != "" and largura_capa == "" and altura_capa == "":
-    #     if livro.get_altura_capa() and livro.get_largura_capa():
-    #         gerar_capa = gerar_pixel(
-    #             caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
-    #     else:
-    #         gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-    #     if gerar_capa:
-    #         livro.set_capa(gerar_capa)
-    #         mensagem += f"Caminho editado\n"
-    #     else:
-    #         mensagem += "Erro ao gerar capa"
+    if caminho_capa != "" and largura_capa == "" and altura_capa == "":
+        if livro.get_altura_capa() and livro.get_largura_capa():
+            gerar_capa = gerar_pixel(
+                caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
+        else:
+            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
+        if gerar_capa:
+            livro.set_capa(gerar_capa)
+            mensagem += f"Caminho editado\n"
+        else:
+            mensagem += "Erro ao gerar capa"
 
-    # if caminho_capa == "" and largura_capa != "" and altura_capa != "":
-    #     try:
-    #         largura_capa = int(largura_capa)
-    #         altura_capa = int(altura_capa)
-    #         if livro.get_caminho_capa():
-    #             gerar_capa = gerar_pixel(
-    #                 livro.get_caminho_capa(), largura_capa, altura_capa)
-    #             if gerar_capa:
-    #                 livro.set_capa(gerar_capa)
-    #                 livro.set_largura_capa(largura_capa)
-    #                 livro.set_altura_capa(altura_capa)
-    #                 mensagem += f"Tamanho editado\n"
-    #             else:
-    #                 mensagem += "Erro ao gerar capa"
-    #         else:
-    #             mensagem += "Capa precisa ter um caminho"
-    #     except:
-    #         mensagem += f"Erro ao converter '{largura_capa}' e '{altura_capa}'"
+    if caminho_capa == "" and largura_capa != "" and altura_capa != "":
+        try:
+            largura_capa = int(largura_capa)
+            altura_capa = int(altura_capa)
+            if livro.get_caminho_capa():
+                gerar_capa = gerar_pixel(
+                    livro.get_caminho_capa(), largura_capa, altura_capa)
+                if gerar_capa:
+                    livro.set_capa(gerar_capa)
+                    livro.set_largura_capa(largura_capa)
+                    livro.set_altura_capa(altura_capa)
+                    mensagem += f"Tamanho editado\n"
+                else:
+                    mensagem += "Erro ao gerar capa"
+            else:
+                mensagem += "Capa precisa ter um caminho"
+        except:
+            mensagem += f"Erro ao converter '{largura_capa}' e '{altura_capa}'"
 
-    # if caminho_capa == "" and largura_capa != "" and altura_capa == "":
-    #     mensagem += "Altura não pode estar vazia"
+    if caminho_capa == "" and largura_capa != "" and altura_capa == "":
+        mensagem += "Altura não pode estar vazia"
 
-    # if caminho_capa == "" and largura_capa == "" and altura_capa != "":
-    #     mensagem += "Largura não pode estar vazia"
+    if caminho_capa == "" and largura_capa == "" and altura_capa != "":
+        mensagem += "Largura não pode estar vazia"
 
     return mensagem
