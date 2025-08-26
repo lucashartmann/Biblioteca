@@ -33,6 +33,10 @@ jobs:
               --add-data "view;view" `
               --hidden-import textual.widgets._tab_pane Main.py
 
+      - name: Create archive
+        run: |
+          powershell Compress-Archive -Path dist/Main/* -DestinationPath dist/Biblioteca
+
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4
         with:
