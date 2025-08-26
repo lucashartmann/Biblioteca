@@ -37,20 +37,8 @@ jobs:
         run: |
           powershell Compress-Archive -Path dist/Main/* -DestinationPath dist/Biblioteca.zip
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+      - name: Fazer upload do artefato
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.sha }}
-          name: Biblioteca ${{ github.sha }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload zip to release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/Biblioteca.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: Biblioteca-Executavel
+          path: dist_zip/Biblioteca.zip
