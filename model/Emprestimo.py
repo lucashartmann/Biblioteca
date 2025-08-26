@@ -44,4 +44,4 @@ class Emprestimo:
         return data_formatada
 
     def __str__(self):
-        return f"Emprestimo [ID = {self.get_id()}, Livro = {self.get_livro().__str__().split(",")[:-2]}, Leitor = {self.get_leitor()}, Data para Devolução = {self.get_data_para_devolucao()}]"
+        return f"Emprestimo [ID = {self.get_id()}, Livro = {self.get_livro().__str__().split(',')[:-2]}, Leitor = {self.get_leitor()}, Data para Devolução = {self.get_data_para_devolucao()}]"

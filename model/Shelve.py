@@ -1,3 +1,4 @@
+import dbm
 import shelve
 
 
@@ -7,14 +8,13 @@ def salvar(nome_arquivo, chave, dados):
 
 
 def carregar(nome_arquivo, chave):
-    with shelve.open(f"data/{nome_arquivo}") as db:
-        if db:
-            if chave in db.keys():
-                dado = db[chave]
-                return (dado)
+    try:
+        with shelve.open(f"data/{nome_arquivo}", flag='r') as db:
+            if chave in db:
+                return db[chave]
             return None
-        else:
-            return None
+    except dbm.error:
+        return None
 
 
 def deletar(nome_arquivo, chave):

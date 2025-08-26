@@ -1,0 +1,58 @@
+name: Build and Release LivrosApp
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:   
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller --onedir ^
+            --icon=assets/livros.ico ^
+            --add-data "assets;assets" ^
+            --add-data "data;data" ^
+            --add-data "view;view" ^
+            --hidden-import textual.widgets._tab_pane ^
+            Main.py
+
+      - name: Create zip archive
+        run: |
+          powershell Compress-Archive -Path dist/Main/* -DestinationPath dist/Biblioteca.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.sha }}
+          name: Biblioteca ${{ github.sha }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload zip to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/Biblioteca.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
