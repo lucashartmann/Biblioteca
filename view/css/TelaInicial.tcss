@@ -11,28 +11,35 @@ TelaEstoque TextArea {
     height: 5;
 }
 
-TelaEstoque Checkbox {
-    margin: 1;
-}
-
 TelaEstoque Input {
-    width: 70%;
+    width: 60%;
 }
 
 TelaEstoque #hg_pesquisa {
     margin: 1;
 }
 
+TelaEstoque #bt_retirar, TelaEstoque #bt_remover  {
+    margin-right: 1;
+}
+
+
 # TelaCadastroLeitor
 
 TelaCadastroLeitor {
     layout: grid;
     align: center middle;
+    content-align: center middle;
     grid-size: 4 3;
 }
 
 TelaCadastroLeitor Input{
     width: 80%;
+}
+
+TelaCadastroLeitor Select {
+    column-span: 2;
+    width: 70%;
 }
 
 

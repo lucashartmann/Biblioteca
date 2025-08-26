@@ -13,7 +13,6 @@ class RetiradaRealizada(Message):
 
 
 class TelaEstoque(VerticalScroll):
-    CSS_PATH = "css/TelaEstoque.tcss"
 
     def compose(self):
         with HorizontalGroup(id="hg_pesquisa"):
@@ -85,7 +84,7 @@ class TelaEstoque(VerticalScroll):
                 input_id = self.query_one(Input).value
                 mensagem = Controller.excluir_livro(input_id)
                 self.notify(str(mensagem), markup=False)
-                self.post_message(RetiradaRealizada(self))
+                self.on_mount()
 
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):

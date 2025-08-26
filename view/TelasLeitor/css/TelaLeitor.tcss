@@ -10,10 +10,3 @@ TelaDevolucao #hg_pesquisa {
     margin: 1;
 }
 
-TelaDevolucao #bt_devolver {
-    margin-right: 1;
-}
-
-TelaEstoque #bt_retirar {
-    margin-right: 1;
-}

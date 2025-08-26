@@ -3,10 +3,25 @@
 TelaCadastroLivro {
     layout: grid;
     align: center middle;
+    grid-size: 4 6;
 }
 
-Input {
-    width: 20%;
+TelaCadastroLivro Input {
+    width: 90%;
+}
+
+TelaCadastroLivro #hg_genero{
+    column-span: 3;
+}
+
+TelaCadastroLivro #select_operacao{
+    column-span: 4;
+    width: 30%;
+}
+
+TelaCadastroLivro #inpt_genero{
+    width: 75%;
+    margin-left: 30;
 }
 
 # TelaClientela

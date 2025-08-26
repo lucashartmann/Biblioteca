@@ -13,8 +13,6 @@ class CadastroLeitorRealizado(Message):
 
 class TelaCadastroLeitor(Container):
 
-    CSS_PATH = "css/TelaCadastroLeitor.tcss"
-
     def compose(self):
         yield Label("Email do Leitor:")
         yield Input(placeholder="Email aqui", id="input_pesquisar_email")
@@ -22,9 +20,9 @@ class TelaCadastroLeitor(Container):
         yield Input(placeholder="Nome aqui")
         yield Label("Email:")
         yield Input(placeholder="Email aqui", id="input_email")
-        yield Select([("Cadastrar", 'Cadastrar'), ("Editar", "Editar"), ("Remover", "Remover")], id="select_operacao")
+        yield Select([("Cadastrar", 'Cadastrar'), ("Editar", "Editar"), ("Remover", "Remover")])
         yield Button("Limpar", id="bt_limpar")
-        yield Button("Cadastrar", id="bt_cadastrar")
+        yield Button("Executar", id="bt_executar")
         yield Button("Voltar", id="bt_voltar")
 
     def on_mount(self):
@@ -43,21 +41,29 @@ class TelaCadastroLeitor(Container):
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""
-            case "bt_remover":
-                input_email = self.query_one(Input).value
-                mensagem = Controller.excluir_leitor(input_email.upper())
-                self.notify(str(mensagem), markup=False)
-                self.post_message(CadastroLeitorRealizado(self))
-            case "bt_editar":
-                input_email = self.query_one("#input_email", Input).value
-                dados = []
-                for input in self.query(Input)[1:]:
-                    dados.append(input.value.upper())
-                mensagem = Controller.editar_leitor(input_email.upper(), dados)
-                self.notify(str(mensagem), markup=False)
-                self.post_message(CadastroLeitorRealizado(self))
-            case  "bt_cadastrar":
-                self.cadastro()
+            case "bt_executar":
+                match self.query_one(Select).value:
+                    case "Remover":
+                        input_email = self.query_one(
+                            "#input_pesquisar_email", Input).value
+                        mensagem = Controller.excluir_leitor(
+                            input_email.upper())
+                        self.notify(str(mensagem), markup=False)
+                        self.post_message(CadastroLeitorRealizado(self))
+                    case "Editar":
+                        input_email = self.query_one(
+                            "#input_pesquisar_email", Input).value
+                        dados = []
+                        for input in self.query(Input)[1:]:
+                            dados.append(input.value.upper())
+                        mensagem = Controller.editar_leitor(
+                            input_email.upper(), dados)
+                        self.notify(str(mensagem), markup=False)
+                        self.post_message(CadastroLeitorRealizado(self))
+                    case "Cadastrar":
+                        self.cadastro()
+                    case _:
+                        self.notify("Nenhuma opção de operação selecionada")
 
     def cadastro(self):
         dados = []

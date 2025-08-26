@@ -5,12 +5,12 @@ from controller import Controller
 
 
 class TelaClientela(Container):
-    CSS_PATH = "css/TelaClientela.tcss"
 
     def compose(Container):
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input()
-            yield Button("Voltar", id="bt_voltar")
+            yield Button("Cadastrar", id="bt_cadastrar")
+            yield Button("Remover", id="bt_remover")
         yield TextArea(disabled=True)
         with HorizontalGroup(id="container"):
             pass
@@ -36,8 +36,15 @@ class TelaClientela(Container):
 
         self.setup_dados()
 
-    def on_button_pressed(self):
-        self.screen.app.switch_screen("tela_inicial")
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_voltar":
+                self.screen.app.switch_screen("tela_inicial")
+            case "bt_remover":
+                input_email = self.query_one(Input).value
+                mensagem = Controller.excluir_leitor(input_email.upper())
+                self.notify(str(mensagem), markup=False)
+                self.atualizar()
 
     def atualizar(self):
         resultado = self.query_one(Pretty)

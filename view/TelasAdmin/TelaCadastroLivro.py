@@ -12,7 +12,6 @@ class CadastroRealizado(Message):
 
 
 class TelaCadastroLivro(Container):
-    CSS_PATH = "css/TelaCadastroLivro.tcss"
 
     montou = False
     valor_select = ""
@@ -41,43 +40,44 @@ class TelaCadastroLivro(Container):
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""
+            case "bt_executar":
+                match self.query_one("#select_operacao", Select).value:
+                    case "Cadastrar":
+                        if self.montou:
+                            self.montou = False
+                            self.query_one("#lbl_genero").remove()
+                            self.query_one("#inpt_genero").remove()
+                        self.cadastro()
 
-            case "bt_cadastrar":
-                if self.montou:
-                    self.montou = False
-                    self.query_one("#lbl_genero").remove()
-                    self.query_one("#inpt_genero").remove()
-                self.cadastro()
+                    case "Editar":
+                        if self.montou:
+                            self.montou = False
+                            self.query_one("#lbl_genero").remove()
+                            self.query_one("#inpt_genero").remove()
+                        input_id = self.query_one("#ipt_id", Input).value
+                        dados = []
+                        for input in self.query(Input)[1:]:
+                            dados.append(input.value.upper())
+                        if self.valor_select != "Novo Genero":
+                            if self.query_one(Select).is_blank():
+                                dados.append("")
+                            else:
+                                dados.append(self.query_one(Select).value)
+                        elif self.montou:
+                            dados.append(self.query_one(
+                                "#inpt_genero", Input).value)
+                        else:
+                            dados.append("")
+                        mensagem = Controller.editar_livro(input_id, dados)
+                        self.notify(str(mensagem), markup=False)
+                        self.screen.on_mount()
+                        self.post_message(CadastroRealizado(self))
 
-            case "bt_editar":
-                if self.montou:
-                    self.montou = False
-                    self.query_one("#lbl_genero").remove()
-                    self.query_one("#inpt_genero").remove()
-                input_id = self.query_one("#ipt_id", Input).value
-                dados = []
-                for input in self.query(Input)[1:]:
-                    dados.append(input.value.upper())
-                if self.valor_select != "Novo Genero":
-                    if self.query_one(Select).is_blank():
-                        dados.append("")
-                    else:
-                        dados.append(self.query_one(Select).value)
-                elif self.montou:
-                    dados.append(self.query_one(
-                        "#inpt_genero", Input).value)
-                else:
-                    dados.append("")
-                mensagem = Controller.editar_livro(input_id, dados)
-                self.notify(str(mensagem), markup=False)
-                self.screen.on_mount()
-                self.post_message(CadastroRealizado(self))
-
-            case "bt_remover":
-                input_id = self.query_one(Input).value
-                mensagem = Controller.excluir_livro(input_id)
-                self.notify(str(mensagem), markup=False)
-                self.post_message(CadastroRealizado(self))
+                    case "Remover":
+                        input_id = self.query_one(Input).value
+                        mensagem = Controller.excluir_livro(input_id)
+                        self.notify(str(mensagem), markup=False)
+                        self.post_message(CadastroRealizado(self))
 
     montou = False
     valor_select = ""
@@ -90,28 +90,27 @@ class TelaCadastroLivro(Container):
                 lista_generos.append(livro.get_genero())
         if "Novo Genero" not in lista_generos:
             lista_generos.append("Novo Genero")
-        for select in self.query(Select):
-            select.set_options(
-                [(genero, genero) for genero in lista_generos])
+        select = self.query_one("#slct_genero", Select)
+        select.set_options(
+            [(genero, genero) for genero in lista_generos])
 
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
-        self.valor_select = str(evento.value)
-        select = evento._sender
-        container = select.parent
-        hg = container.query_one("#hg_genero", HorizontalGroup)
-        hg.styles.column_span = 2
-        select.styles.column_span = 2
-        select.styles.width = "40%"
-        if self.valor_select == "Novo Genero" and not self.montou:
-            hg.mount(Label("genero:", id="lbl_genero"))
-            hg.mount(
-                Input(placeholder="genero aqui", id="inpt_genero"))
-            self.montou = True
-        elif self.valor_select != "Novo Genero" and self.montou:
-            self.query_one("#lbl_genero").remove()
-            self.query_one("#inpt_genero").remove()
-            self.montou = False
+        if evento.select.id == "slct_genero":
+            self.valor_select = str(evento.value)
+            hg = self.query_one("#hg_genero", HorizontalGroup)
+            hg.styles.column_span = 2
+            evento.select.styles.column_span = 2
+            evento.select.styles.width = "40%"
+            if self.valor_select == "Novo Genero" and not self.montou:
+                hg.mount(Label("genero:", id="lbl_genero"))
+                hg.mount(
+                    Input(placeholder="genero aqui", id="inpt_genero"))
+                self.montou = True
+            elif self.valor_select != "Novo Genero" and self.montou:
+                self.query_one("#lbl_genero").remove()
+                self.query_one("#inpt_genero").remove()
+                self.montou = False
 
     def cadastro(self):
         dados = []

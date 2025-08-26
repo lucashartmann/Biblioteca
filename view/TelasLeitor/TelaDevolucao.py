@@ -13,8 +13,6 @@ class DevolucaoRealizada(Message):
 
 class TelaDevolucao(VerticalScroll):
 
-    CSS_PATH = "css/TelaDevolucao.tcss"
-
     def compose(self):
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input()

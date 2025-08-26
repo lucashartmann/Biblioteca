@@ -25,6 +25,7 @@ class TelaAdmin(Screen):
         tela_estoque = self.query_one(TelaEstoque.TelaEstoque)
         tela_estoque.on_mount()
 
+
     def on_cadastro_leitor_realizado(self):
         tela_clientela = self.query_one(TelaClientela.TelaClientela)
         tela_clientela.on_mount()
