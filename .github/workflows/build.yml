@@ -33,15 +33,8 @@ jobs:
               --add-data "view;view" `
               --hidden-import textual.widgets._tab_pane Main.py
 
-      - name: Create archive
-        run: |
-          powershell -Command "
-          cd dist/Main
-          Compress-Archive -Path * -DestinationPath ../Biblioteca.zip -CompressionLevel Optimal
-          "
-
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4
         with:
           name: Biblioteca
-          path: dist/Biblioteca.zip
+          path: dist/Main/*
