@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:   
+  workflow_dispatch:
 
 jobs:
   build-and-release:
@@ -27,13 +27,12 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --onedir ^
-            --icon=assets/livros.ico ^
-            --add-data "assets;assets" ^
-            --add-data "data;data" ^
-            --add-data "view;view" ^
-            --hidden-import textual.widgets._tab_pane ^
-            Main.py
+          pyinstaller --onedir `
+              --icon=assets/livros.ico `
+              --add-data "assets;assets" `
+              --add-data "data;data" `
+              --add-data "view;view" `
+              --hidden-import textual.widgets._tab_pane Main.py
 
       - name: Create zip archive
         run: |
