@@ -1,6 +1,7 @@
 class Livro:
 
     def __init__(self, titulo, autor, genero, quant):
+        self.codigo = 0
         self.capa = ""
         self.caminho_capa = ""
         self.largura_capa = 0
@@ -8,9 +9,14 @@ class Livro:
         self.autor = autor
         self.genero = genero
         self.titulo = titulo
-        self.codigo = self.gerar_cod()
         self.quant = quant
         self.disponivel = True
+        
+    def set_codigo(self, novo_codigo):
+        self.codigo = novo_codigo
+        
+    def get_codigo(self):
+        return self.codigo
 
     def get_largura_capa(self):
         return self.largura_capa
@@ -24,11 +30,14 @@ class Livro:
     def set_altura_capa(self, novo_altura_capa):
         self.altura_capa = novo_altura_capa
 
-    def get_caminho_capa(self):
-        return self.caminho_capa
-
     def set_caminho_capa(self, novo_caminho):
         self.caminho_capa = novo_caminho
+        
+    def get_caminho_capa(self):
+        return self.caminho_capa
+    
+    def set_disponivel(self, novo_disponivel):
+        self.disponivel = novo_disponivel
 
     def get_capa(self):
         return self.capa
@@ -70,4 +79,4 @@ class Livro:
             self.disponivel = True
 
     def __str__(self):
-        return f"Livro [Codigo = {self.get_codigo()}, Titulo = {self.get_titulo()}, Autor = {self.get_autor()}, Genero = {self.get_genero()}, Quantidade = {self.get_quant()}, Disponivel = {self.is_disponivel()}]"
+        return f"Livro [Titulo = {self.get_titulo()}, Autor = {self.get_autor()}, Genero = {self.get_genero()}, Quantidade = {self.get_quant()}, Disponivel = {self.is_disponivel()}]"

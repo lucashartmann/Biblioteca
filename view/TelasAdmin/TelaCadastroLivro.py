@@ -90,7 +90,7 @@ class TelaCadastroLivro(Container):
     valor_select = ""
 
     def on_mount(self):
-        livros = Controller.get_livros_biblioteca().values()
+        livros = Controller.get_livros_biblioteca()
         lista_generos = []
         for livro in livros:
             if livro.get_genero() not in lista_generos:

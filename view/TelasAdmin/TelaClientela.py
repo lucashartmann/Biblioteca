@@ -15,7 +15,7 @@ class TelaClientela(Container):
         with HorizontalGroup(id="container"):
             pass
 
-    leitores = Controller.get_leitores_biblioteca().values()
+    leitores = Controller.get_leitores_biblioteca()
     leitores_filtrados = []
     montou = False
 

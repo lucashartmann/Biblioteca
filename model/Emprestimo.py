@@ -3,20 +3,12 @@ import random
 
 
 class Emprestimo:
-    id = 0
 
     def __init__(self, livro, leitor):
+        self.id = 0
         self.livro = livro
         self.leitor = leitor
         self.data_para_devolucao = self.calcular_data_para_devolucao()
-        self.id = self.gerar_id()
-
-    def gerar_id(self):
-        Emprestimo.id += 1
-        return Emprestimo.id
-
-    def get_id(self):
-        return self.id
 
     def get_livro(self):
         return self.livro

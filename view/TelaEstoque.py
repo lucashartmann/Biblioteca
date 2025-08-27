@@ -27,7 +27,7 @@ class TelaEstoque(VerticalScroll):
         with HorizontalGroup(id="container"):
             pass
 
-    livros = Controller.get_livros_biblioteca().values()
+    livros = Controller.get_livros_biblioteca()
 
     livros_filtrados = []
     filtrou_select = False

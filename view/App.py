@@ -22,12 +22,7 @@ class App(App):
         #     Shelve.salvar("Banco.db", "Biblioteca", Init.biblioteca)
         #     mensagem += "Biblioteca salva com sucesso"
         # self.notify(mensagem)
-        mensagem = Controller.salvar_no_banco()
-        self.notify(mensagem)
-        
-        
-
-
+        pass
 
     SCREENS = {
         "tela_inicial": TelaInicial.TelaInicial,

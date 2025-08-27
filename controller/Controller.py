@@ -1,5 +1,5 @@
 import sys
-from model import Leitor, Livro, Init, Banco
+from model import Leitor, Livro, Init
 from rich_pixels import Pixels
 from PIL import Image
 import os
@@ -76,7 +76,7 @@ def is_pyinstaller():
         return False, ""
 
 
-if not Init.carregar_biblioteca:
+if not Init.biblioteca.get_lista_livros():
     e_exe, caminho = is_pyinstaller()
     print(caminho)
     print(f"{caminho}\\assets\\c0.jpg")

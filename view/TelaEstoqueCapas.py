@@ -23,7 +23,7 @@ class TelaEstoqueCapas(Screen):
         Binding("ctrl+l", "app.switch_screen('tela_inicial')", "Voltar")
     ]
 
-    mapa_livros = Controller.get_livros_biblioteca()
+    livros = Controller.get_livros_biblioteca()
     livros_filtrados = []
 
     filtrou_select = False
@@ -35,7 +35,7 @@ class TelaEstoqueCapas(Screen):
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
         # contador = 0
-        lista = self.mapa_livros.values()
+        lista = self.livros
         if len(self.livros_filtrados) > 0:
             lista = self.livros_filtrados
 
@@ -62,14 +62,18 @@ class TelaEstoqueCapas(Screen):
                 #     contador = 0
 
     def _on_screen_resume(self):
+        self.livros = Controller.get_livros_biblioteca()
+        
         if Init.usuario_leitor:
-            lista_usuario = dict()
-            for chave, livro in self.mapa_livros.items():
+            lista_usuario = []
+            for livro in self.livros:
                 if livro.is_disponivel():
-                    lista_usuario[chave] = livro
-            self.mapa_livros = lista_usuario
+                    lista_usuario.append(livro)
+            self.livros = lista_usuario
+            
+            
         lista_categorias = []
-        for livro in self.mapa_livros.values():
+        for livro in self.livros:
             if livro.get_genero() not in lista_categorias:
                 lista_categorias.append(livro.get_genero())
         self.query_one(Select).set_options(
@@ -115,7 +119,7 @@ class TelaEstoqueCapas(Screen):
         lista = self.query_one("#lst_item", ListView)
         info = self.query_one("#tx_info", Label)
         try:
-            nome_item = self.mapa_livros[lista.index + 1].get_titulo()
+            nome_item = self.livros[lista.index + 1].get_titulo()
             info.update(f"{nome_item}")
         except:
             pass
@@ -134,7 +138,7 @@ class TelaEstoqueCapas(Screen):
                 self.livros_filtrados = []
                 valor_antigo = valor_select
             if len(self.livros_filtrados) == 0:
-                for livro in self.mapa_livros.values():
+                for livro in self.livros:
                     if livro.get_genero() == valor_select:
                         self.livros_filtrados.append(livro)
             else:
@@ -198,7 +202,7 @@ class TelaEstoqueCapas(Screen):
             else:
                 if len(nova_lista) > 0:
                     for p in nova_lista:
-                        for livro in self.mapa_livros.values():
+                        for livro in self.livros:
                             if type(filtro) == int:
                                 if p == getattr(livro, campo)() and livro not in self.livros_filtrados:
                                     self.livros_filtrados.append(
@@ -208,7 +212,7 @@ class TelaEstoqueCapas(Screen):
                                     self.livros_filtrados.append(
                                         livro)
                 else:
-                    for livro in self.mapa_livros.values():
+                    for livro in self.livros:
                         if type(filtro) == int:
                             if filtro == getattr(livro, campo)() and livro not in self.livros_filtrados:
                                 self.livros_filtrados.append(livro)
