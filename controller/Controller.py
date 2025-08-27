@@ -1,3 +1,4 @@
+import sys
 from model import Leitor, Livro, Init
 from rich_pixels import Pixels
 from PIL import Image
@@ -60,11 +61,29 @@ def gerar_pixel(caminho, largura, altura):
     return None
 
 
+def is_pyinstaller():
+    if getattr(sys, 'frozen', False):
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
+        return True, base_path
+    else:
+        return False, ""
+
+
 if not Init.carregar_biblioteca:
-    Init.livro1.set_capa(gerar_pixel("assets/c0.jpg", 30, 30))
-    Init.livro2.set_capa(gerar_pixel("assets/c1.jpg", 30, 30))
-    Init.livro3.set_capa(gerar_pixel("assets/c2.jpg", 30, 30))
-    Init.livro4.set_capa(gerar_pixel("assets/c3.jpg", 30, 30))
+    e_exe, caminho = is_pyinstaller()
+    print(caminho)
+    print(f"{caminho}\\assets\\c0.jpg")
+
+    if e_exe:
+        Init.livro1.set_capa(gerar_pixel(f"{caminho}\\assets\\c0.jpg", 30, 30))
+        Init.livro2.set_capa(gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
+        Init.livro3.set_capa(gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
+        Init.livro4.set_capa(gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
+    else:
+        Init.livro1.set_capa(gerar_pixel("assets\\c0.jpg", 30, 30))
+        Init.livro2.set_capa(gerar_pixel("assets\\c1.jpg", 30, 30))
+        Init.livro3.set_capa(gerar_pixel("assets\\c2.jpg", 30, 30))
+        Init.livro4.set_capa(gerar_pixel("assets\\c3.jpg", 30, 30))
 
     Init.livro1.set_largura_capa(30)
     Init.livro2.set_largura_capa(30)
