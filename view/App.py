@@ -3,7 +3,7 @@ from view import TelaInicial, TelaEstoqueCapas
 from view.TelasLeitor import TelaLeitor
 from view.TelasAdmin import TelaAdmin
 from textual.binding import Binding
-from model import Shelve, Init
+from controller import Controller
 
 class App(App):
 
@@ -14,14 +14,20 @@ class App(App):
     }
         
     def action_salvar(self):
-        mensagem = ""
-        if Init.usuario_leitor:
-            Shelve.salvar("Banco.db", "Leitor", Init.leitor1)
-            mensagem += "Leitor salvo com sucesso"
-        else:
-            Shelve.salvar("Banco.db", "Biblioteca", Init.biblioteca)
-            mensagem += "Biblioteca salva com sucesso"
+        # mensagem = ""
+        # if Init.usuario_leitor:
+        #     Shelve.salvar("Banco.db", "Leitor", Init.leitor1)
+        #     mensagem += "Leitor salvo com sucesso"
+        # else:
+        #     Shelve.salvar("Banco.db", "Biblioteca", Init.biblioteca)
+        #     mensagem += "Biblioteca salva com sucesso"
+        # self.notify(mensagem)
+        mensagem = Controller.salvar_no_banco()
         self.notify(mensagem)
+        
+        
+
+
 
     SCREENS = {
         "tela_inicial": TelaInicial.TelaInicial,

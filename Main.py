@@ -4,7 +4,8 @@ import sys
 
 comando = sys.argv[1:]
 
-# pyinstaller --icon=assets/livros.ico --add-data "assets;assets" --add-data "data;data" --add-data "view/css;view/css" --add-data "view/TelasAdmin/css;view/TelasAdmin/css" --add-data "view/TelasLeitor/css;view/TelasLeitor/css" --add-data "model/Emprestimo.py;model" --hidden-import textual.widgets._tab_pane Main.py
+# pyinstaller  --add-data "assets;assets" --add-data "data;data" --add-data "view/css;view/css" --add-data "view/TelasAdmin/css;view/TelasAdmin/css" --add-data "view/TelasLeitor/css;view/TelasLeitor/css" --add-data "model/Emprestimo.py;model" --add-data "model/Banco.py;model" --hidden-import textual.widgets._tab_pane Main.py
+
 # pyinstaller Main.py
 # pip install pyinstaller
 

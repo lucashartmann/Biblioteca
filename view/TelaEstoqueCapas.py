@@ -6,7 +6,6 @@ from textual.containers import VerticalScroll, HorizontalGroup
 from textual.binding import Binding
 from model import Init
 from textual.message import Message
-from textual.events import Key
 
 
 class RetiradaRealizada(Message):

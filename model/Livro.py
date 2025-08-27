@@ -1,5 +1,4 @@
 class Livro:
-    cod = 0
 
     def __init__(self, titulo, autor, genero, quant):
         self.capa = ""
@@ -31,10 +30,6 @@ class Livro:
     def set_caminho_capa(self, novo_caminho):
         self.caminho_capa = novo_caminho
 
-    def gerar_cod(self):
-        Livro.cod += 1
-        return Livro.cod
-
     def get_capa(self):
         return self.capa
 
@@ -46,9 +41,6 @@ class Livro:
 
     def get_titulo(self):
         return self.titulo
-
-    def get_codigo(self):
-        return self.codigo
 
     def get_quant(self):
         return self.quant

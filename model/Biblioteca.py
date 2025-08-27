@@ -1,12 +1,16 @@
-from model import Emprestimo
+import sqlite3
 
+from model import Emprestimo
 
 class Biblioteca:
 
     def __init__(self):
+        e_exe, caminho = self.is_pyinstaller()
+        if e_exe:
+            self.conexao = sqlite3.connect(f"{caminho}\\data/Biblioteca.db")
+        else:
+            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
         self.nome = ""
-        self.livros = dict()
-        self.leitores = dict()
 
     def emprestar(self, livro, leitor):
         if livro.is_disponivel():
@@ -40,12 +44,20 @@ class Biblioteca:
         if email in self.leitores.keys():
             return self.leitores[email]
         return None
+    
+
 
     def add_livro(self, livro):
-        if not self.get_livro_por_cod(livro.get_codigo()):
-            self.livros[livro.get_codigo()] = livro
-            return True
-        return False
+        cursor = self.conexao.cursor()
+
+
+        cursor.executemany(
+            f'INSERT INTO Livro (titulo, autor, genero, quant) VALUES (?, ?)', [livro.get_titulo(), livro.get_])
+        
+        self.conexao.commit()
+        cursor.close()
+        # self.encerrar_conexao()
+        return True
 
     def add_leitor(self, leitor):
         if not self.get_leitor_por_email(leitor.get_email()):

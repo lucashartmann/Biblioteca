@@ -1,5 +1,5 @@
 import sys
-from model import Leitor, Livro, Init
+from model import Leitor, Livro, Init, Banco
 from rich_pixels import Pixels
 from PIL import Image
 import os
@@ -60,6 +60,13 @@ def gerar_pixel(caminho, largura, altura):
             return None
     return None
 
+def salvar_no_banco():
+    Init.banco_dados.criar_tabela("Leitor")
+    for leitor in Init.biblioteca.get_lista_leitores().values():
+            dados = [(leitor.get_nome(), leitor.get_email())]
+            if not Init.banco_dados.consulta_dado("Leitor", leitor.get_email()):
+                Init.banco_dados.inserir_dados(dados, "Leitor")
+    return "Leitores salvos com sucesso"
 
 def is_pyinstaller():
     if getattr(sys, 'frozen', False):

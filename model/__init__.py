@@ -1,9 +1,11 @@
-from model import Leitor, Livro, Biblioteca, Shelve
+from model import Leitor, Livro, Biblioteca, Shelve, Banco
 
 
 class Init:
     usuario_leitor = False
     leitor_cadastado = False
+
+    banco_dados = Banco.Banco()
 
     carregar_biblioteca = Shelve.carregar("Banco.db", "Biblioteca")
     if carregar_biblioteca:
