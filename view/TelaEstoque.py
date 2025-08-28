@@ -27,7 +27,7 @@ class TelaEstoque(VerticalScroll):
         with HorizontalGroup(id="container"):
             pass
 
-    livros = Controller.get_livros_biblioteca()
+    livros = Init.biblioteca.get_lista_livros()
 
     livros_filtrados = []
     filtrou_select = False
@@ -44,6 +44,7 @@ class TelaEstoque(VerticalScroll):
 
     def on_mount(self):
         emprestimos_str = []
+        self.livros = Init.biblioteca.get_lista_livros()
         if self.montou:
             self.query_one(Pretty).update(emprestimos_str)
         else:

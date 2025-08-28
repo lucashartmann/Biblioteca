@@ -3,7 +3,6 @@ from view import TelaInicial, TelaEstoqueCapas
 from view.TelasLeitor import TelaLeitor
 from view.TelasAdmin import TelaAdmin
 from textual.binding import Binding
-from controller import Controller
 
 class App(App):
 

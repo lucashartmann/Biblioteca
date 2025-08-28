@@ -66,6 +66,8 @@ class TelaCadastroLeitor(Container):
                         self.cadastro()
                         if Init.usuario_leitor:
                             self.on_mount()
+                        self.post_message(CadastroLeitorRealizado(self))
+                        
                     case _:
                         self.notify("Nenhuma opção de operação selecionada")
 

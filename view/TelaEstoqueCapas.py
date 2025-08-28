@@ -23,7 +23,7 @@ class TelaEstoqueCapas(Screen):
         Binding("ctrl+l", "app.switch_screen('tela_inicial')", "Voltar")
     ]
 
-    livros = Controller.get_livros_biblioteca()
+    livros = Init.biblioteca.get_lista_livros()
     livros_filtrados = []
 
     filtrou_select = False
@@ -41,7 +41,7 @@ class TelaEstoqueCapas(Screen):
 
         for i, livro in enumerate(lista):
             self.notify(livro.get_caminho_capa())
-            if livro.get_capa():
+            if livro.get_capa_pixel():
                 # contador += 1
 
                 static = Static(livro.get_capa())
@@ -63,7 +63,7 @@ class TelaEstoqueCapas(Screen):
                 #     contador = 0
 
     def _on_screen_resume(self):
-        self.livros = Controller.get_livros_biblioteca()
+        self.livros = Init.biblioteca.get_lista_livros()
         
         if Init.usuario_leitor:
             lista_usuario = []

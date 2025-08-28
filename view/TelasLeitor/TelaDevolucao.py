@@ -40,6 +40,7 @@ class TelaDevolucao(VerticalScroll):
             TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, nome: lucas' \n\nQuantidade de Empréstimos: {quant}"
 
     def on_mount(self):
+        self.emprestimos = Init.leitor1.get_lista_emprestimos()
         emprestimos_str = []
         if self.montou:
             self.query_one(Pretty).update(emprestimos_str)

@@ -2,6 +2,7 @@ from textual.widgets import Input, Pretty, TextArea, Button
 from textual.containers import HorizontalGroup, Container
 from textual.containers import HorizontalGroup
 from controller import Controller
+from model import Init
 
 
 class TelaClientela(Container):
@@ -15,7 +16,7 @@ class TelaClientela(Container):
         with HorizontalGroup(id="container"):
             pass
 
-    leitores = Controller.get_leitores_biblioteca()
+    leitores = Init.biblioteca.get_lista_leitores()
     leitores_filtrados = []
     montou = False
 
@@ -26,7 +27,9 @@ class TelaClientela(Container):
             quant = len(self.leitores)
         self.query_one(TextArea).text = f"Quantidade de leitores: {quant}"
 
+
     def on_mount(self):
+        self.leitores = Init.biblioteca.get_lista_leitores()
         leitores_str = [str(leitor) for leitor in self.leitores]
         if self.montou:
             self.query_one(Pretty).update(leitores_str)

@@ -47,8 +47,12 @@ class Biblioteca:
     def remove_leitor(self, email):
        return self.banco_dados.remove_leitor(email)
    
-    def atualizar_livro(self, tipo_dado, condicao, novo_valor):
+    def atualizar_livro(self,tipo_dado, condicao, novo_valor):
         return self.banco_dados.atualizar_livro(tipo_dado, condicao, novo_valor)
+
+    def atualizar_leitor(self,tipo_dado, condicao, novo_valor):
+        return self.banco_dados.atualizar_leitor(tipo_dado, condicao, novo_valor)
+
 
     def __str__(self):
         return f"Biblioteca [Livros = {self.get_lista_livros()}, Leitores = {self.get_lista_leitores()}]"

@@ -2,6 +2,7 @@ class Livro:
 
     def __init__(self, titulo, autor, genero, quant):
         self.codigo = 0
+        self.capa_pixel = ""
         self.capa = ""
         self.caminho_capa = ""
         self.largura_capa = 0
@@ -12,6 +13,12 @@ class Livro:
         self.quant = quant
         self.disponivel = True
         
+    def set_capa_pixel(self, pixel):
+        self.capa_pixel = pixel
+
+    def get_capa_pixel(self):
+        return self.capa_pixel
+    
     def set_codigo(self, novo_codigo):
         self.codigo = novo_codigo
         

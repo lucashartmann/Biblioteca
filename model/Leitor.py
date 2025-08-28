@@ -7,7 +7,7 @@ class Leitor:
         self.nome = nome
         self.email = email
         self.banco_dados = Banco()
-        self.emprestimos = self.get_emprestimos_por_leitor()
+        self.emprestimos = []
 
     def add_emprestimo(self, emprestimo):
         return self.banco_dados.add_emprestimo(emprestimo)
@@ -24,8 +24,13 @@ class Leitor:
     def get_lista_emprestimos(self):
         return self.banco_dados.get_lista_emprestimos()
 
-    def get_emprestimos_por_leitor(self):
-        return self.banco_dados.get_emprestimos_por_leitor(self.email)
+    def atualizar_emprestimos(self):
+        consulta = self.banco_dados.get_emprestimos_por_leitor(self.email)
+        if consulta:
+            self.emprestimos = consulta
+
+    def get_lista_emprestimos(self):
+        return self.emprestimos
 
     def get_nome(self):
         return self.nome

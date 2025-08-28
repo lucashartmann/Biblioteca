@@ -4,8 +4,6 @@ from rich_pixels import Pixels
 from PIL import Image
 import os
 
-def get_usuario():
-    return Init.leitor1
 
 def get_capa(cod_livro):
     try:
@@ -20,7 +18,7 @@ def get_capa(cod_livro):
         return None
 
 
-def resize(caminho, largura, altura):
+def resize_imagem(caminho, largura, altura):
     size = largura, altura
 
     if not os.path.exists(caminho):
@@ -30,45 +28,20 @@ def resize(caminho, largura, altura):
     try:
         im = Image.open(caminho)
         im.thumbnail(size, Image.Resampling.LANCZOS)
-        novo_caminho = f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}"
-        if os.path.exists(novo_caminho):
-            os.remove(novo_caminho)
-        im.save(novo_caminho)
     except ValueError:
         print(caminho)
-        print(novo_caminho)
-        return False, ""
-    return True, novo_caminho
+        return None
+    return im
 
 
-def gerar_pixel(caminho, largura, altura):
-    if largura and altura:
-        bool, novo_caminho = resize(caminho, largura, altura)
-    else:
-        im = Image.open(caminho)
-        novo_caminho = f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}"
-        if os.path.exists(novo_caminho):
-            os.remove(novo_caminho)
-        im.save(novo_caminho)
-        bool = True
-    if bool:
-        try:
-            pixels = Pixels.from_image_path(novo_caminho)
-            if os.path.exists(novo_caminho):
-                os.remove(novo_caminho)
-            return pixels
-        except Exception:
-            print(f"Erro ao gerar pixels")
-            return None
-    return None
+def gerar_pixel(imagem):
+    try:
+        pixels = Pixels.from_image(imagem)
+        return pixels
+    except Exception:
+        print(f"Erro ao gerar pixels")
+        return None
 
-def salvar_no_banco():
-    Init.banco_dados.criar_tabela("Leitor")
-    for leitor in Init.biblioteca.get_lista_leitores().values():
-            dados = [(leitor.get_nome(), leitor.get_email())]
-            if not Init.banco_dados.consulta_dado("Leitor", leitor.get_email()):
-                Init.banco_dados.inserir_dados(dados, "Leitor")
-    return "Leitores salvos com sucesso"
 
 def is_pyinstaller():
     if getattr(sys, 'frozen', False):
@@ -76,74 +49,6 @@ def is_pyinstaller():
         return True, base_path
     else:
         return False, ""
-
-
-if not Init.biblioteca.get_lista_livros():
-    e_exe, caminho = is_pyinstaller()
-    print(caminho)
-    print(f"{caminho}\\assets\\c0.jpg")
-
-    if e_exe:
-        Init.livro1.set_capa(gerar_pixel(f"{caminho}\\assets\\c0.jpg", 30, 30))
-        Init.livro2.set_capa(gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
-        Init.livro3.set_capa(gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
-        Init.livro4.set_capa(gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
-    else:
-        Init.livro1.set_capa(gerar_pixel("assets\\c0.jpg", 30, 30))
-        Init.livro2.set_capa(gerar_pixel("assets\\c1.jpg", 30, 30))
-        Init.livro3.set_capa(gerar_pixel("assets\\c2.jpg", 30, 30))
-        Init.livro4.set_capa(gerar_pixel("assets\\c3.jpg", 30, 30))
-
-    Init.livro1.set_largura_capa(30)
-    Init.livro2.set_largura_capa(30)
-    Init.livro3.set_largura_capa(30)
-    Init.livro4.set_largura_capa(30)
-
-    Init.livro1.set_altura_capa(30)
-    Init.livro2.set_altura_capa(30)
-    Init.livro3.set_altura_capa(30)
-    Init.livro4.set_altura_capa(30)
-else:
-    e_exe, caminho = is_pyinstaller()
-    print(caminho)
-    print(f"{caminho}\\assets\\c0.jpg")
-    
-    livro1 = Init.biblioteca.get_livro_por_cod(1)
-    livro2 = Init.biblioteca.get_livro_por_cod(2)
-    livro3 = Init.biblioteca.get_livro_por_cod(3)
-    livro4 = Init.biblioteca.get_livro_por_cod(4)
-    
-    if e_exe:
-        Init.biblioteca.atualizar_livro("capa", livro1.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro2.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro3.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro4.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c4.jpg", 30, 30))
-    else:
-        Init.biblioteca.atualizar_livro("capa", livro1.get_codigo(), gerar_pixel("assets\\c0.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro2.get_codigo(), gerar_pixel("assets\\c1.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro3.get_codigo(), gerar_pixel("assets\\c2.jpg", 30, 30))
-        Init.biblioteca.atualizar_livro("capa", livro4.get_codigo(), gerar_pixel("assets\\c3.jpg", 30, 30))
-
-    Init.biblioteca.atualizar_livro("largura_capa", livro1.get_codigo(), 30)
-    Init.biblioteca.atualizar_livro("altura_capa", livro1.get_codigo(), 30)
-
-    livro1.set_largura_capa(30)
-    livro2.set_largura_capa(30)
-    livro3.set_largura_capa(30)
-    livro4.set_largura_capa(30)
-
-    livro1.set_altura_capa(30)
-    livro2.set_altura_capa(30)
-    livro3.set_altura_capa(30)
-    livro4.set_altura_capa(30)
-
-
-def get_livros_biblioteca():
-    return Init.biblioteca.get_lista_livros()
-
-
-def get_leitores_biblioteca():
-    return Init.biblioteca.get_lista_leitores()
 
 
 def emprestar(cod_livro, email):
@@ -168,6 +73,7 @@ def emprestar(cod_livro, email):
         return f"Erro, leitor '{email}' não existe"
 
     emprestimo = Init.biblioteca.emprestar(livro, leitor)
+    leitor.atualizar_emprestimos()
 
     if emprestimo:
         adicao = leitor.add_emprestimo(emprestimo)
@@ -194,6 +100,7 @@ def devolver(id_emprestimo, email):
 
     emprestimo = leitor.get_emprestimo_por_id(id_emprestimo)
     livro = emprestimo.get_livro()
+    leitor.atualizar_emprestimos()
 
     if not emprestimo:
         return f"Erro, empréstimo com id '{id_emprestimo}' não existe"
@@ -236,11 +143,15 @@ def cadastrar_livro(dados):
 
     if caminho_capa != "" and largura_capa != "" and altura_capa != "":
         try:
+
             altura_capa = int(altura_capa)
             largura_capa = int(largura_capa)
-            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-            if gerar_capa:
-                livro.set_capa(gerar_capa)
+            gerar_imagem = resize_imagem(
+                caminho_capa, largura_capa, altura_capa)
+            gerar_pixel = gerar_pixel(gerar_imagem)
+            if gerar_pixel:
+                livro.set_capa = gerar_imagem
+                livro.set_capa_pixel(gerar_pixel)
                 livro.set_largura_capa(largura_capa)
                 livro.set_altura_capa(altura_capa)
             else:
@@ -250,12 +161,17 @@ def cadastrar_livro(dados):
 
     if caminho_capa != "" and largura_capa == "" and altura_capa == "":
         if livro.get_altura_capa() and livro.get_largura_capa():
-            gerar_capa = gerar_pixel(
+            gerar_imagem = resize_imagem(
+                caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
+            gerar_pixel = gerar_pixel(
                 caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
         else:
-            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-        if gerar_capa:
-            livro.set_capa(gerar_capa)
+            gerar_imagem = resize_imagem(
+                caminho_capa, largura_capa, altura_capa)
+            gerar_pixel = gerar_pixel(gerar_imagem)
+        if gerar_pixel:
+            livro.set_capa = gerar_imagem
+            livro.set_capa_pixel(gerar_pixel)
         else:
             return "Erro ao gerar capa"
 
@@ -264,10 +180,13 @@ def cadastrar_livro(dados):
             largura_capa = int(largura_capa)
             altura_capa = int(altura_capa)
             if livro.get_caminho_capa():
-                gerar_capa = gerar_pixel(
+                gerar_imagem = resize_imagem(
                     livro.get_caminho_capa(), largura_capa, altura_capa)
-                if gerar_capa:
-                    livro.set_capa(gerar_capa)
+                gerar_pixel = gerar_pixel(
+                    livro.get_caminho_capa(), largura_capa, altura_capa)
+                if gerar_pixel:
+                    livro.set_capa = gerar_imagem
+                    livro.set_capa_pixel(gerar_pixel)
                     livro.set_largura_capa(largura_capa)
                     livro.set_altura_capa(altura_capa)
                 else:
@@ -364,6 +283,7 @@ def editar_leitor(email, dados):
     if novo_nome != "":
         leitor.set_nome(novo_nome)
         mensagem += f"Nome editado '{novo_nome}'\n"
+        Init.biblioteca.atualizar_leitor("nome", leitor.get_email(), novo_nome)
     if novo_email != "":
         if Init.biblioteca.get_leitor_por_email(novo_email):
             mensagem += f"Erro, '{novo_email}' já cadastrado"
@@ -402,17 +322,22 @@ def editar_livro(cod_livro, dados):
     if titulo != "":
         livro.set_titulo(titulo)
         mensagem += f"Titulo editado '{titulo}'\n"
+        Init.biblioteca.atualizar_livro("titulo", livro.get_codigo(), titulo)
     if autor != "":
         livro.set_autor(autor)
         mensagem += f"Autor editado '{autor}'\n"
+        Init.biblioteca.atualizar_livro("autor", livro.get_codigo(), autor)
     if genero != "":
         livro.set_genero(genero)
         mensagem += f"Genero editado '{genero}'\n"
+        Init.biblioteca.atualizar_livro("genero", livro.get_codigo(), genero)
     if quant != "":
         try:
             quant = int(quant)
             livro.set_quant(quant)
             mensagem += f"Quant editado '{quant}'"
+            Init.biblioteca.atualizar_livro(
+                "quantidade", livro.get_codigo(), quant)
         except:
             mensagem += f"Erro ao converter '{quant}'"
 
@@ -420,9 +345,12 @@ def editar_livro(cod_livro, dados):
         try:
             altura_capa = int(altura_capa)
             largura_capa = int(largura_capa)
-            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-            if gerar_capa:
-                livro.set_capa(gerar_capa)
+            gerar_imagem = resize_imagem(
+                caminho_capa, largura_capa, altura_capa)
+            gerar_pixel = gerar_pixel(gerar_imagem)
+            if gerar_pixel:
+                livro.set_capa = gerar_imagem
+                livro.set_capa_pixel(gerar_pixel)
                 livro.set_largura_capa(largura_capa)
                 livro.set_altura_capa(altura_capa)
                 mensagem += f"Capa editada\n"
@@ -433,12 +361,17 @@ def editar_livro(cod_livro, dados):
 
     if caminho_capa != "" and largura_capa == "" and altura_capa == "":
         if livro.get_altura_capa() and livro.get_largura_capa():
-            gerar_capa = gerar_pixel(
+            gerar_imagem = resize_imagem(
+                caminho_capa, largura_capa, altura_capa)
+            gerar_pixel = gerar_pixel(
                 caminho_capa, livro.get_largura_capa(), livro.get_altura_capa())
         else:
-            gerar_capa = gerar_pixel(caminho_capa, largura_capa, altura_capa)
-        if gerar_capa:
-            livro.set_capa(gerar_capa)
+            gerar_imagem = resize_imagem(
+                caminho_capa, largura_capa, altura_capa)
+            gerar_pixel = gerar_pixel(gerar_imagem)
+        if gerar_pixel:
+            livro.set_capa = gerar_imagem
+            livro.set_capa_pixel(gerar_pixel)
             mensagem += f"Caminho editado\n"
         else:
             mensagem += "Erro ao gerar capa"
@@ -447,11 +380,11 @@ def editar_livro(cod_livro, dados):
         try:
             largura_capa = int(largura_capa)
             altura_capa = int(altura_capa)
-            if livro.get_caminho_capa():
-                gerar_capa = gerar_pixel(
+            if livro.get_capa_pixel():
+                gerar_pixel = gerar_pixel(
                     livro.get_caminho_capa(), largura_capa, altura_capa)
-                if gerar_capa:
-                    livro.set_capa(gerar_capa)
+                if gerar_pixel:
+                    livro.set_capa_pixel(gerar_pixel)
                     livro.set_largura_capa(largura_capa)
                     livro.set_altura_capa(altura_capa)
                     mensagem += f"Tamanho editado\n"
@@ -469,3 +402,47 @@ def editar_livro(cod_livro, dados):
         mensagem += "Largura não pode estar vazia"
 
     return mensagem
+
+
+livro1 = Init.biblioteca.get_livro_por_cod(1)
+livro2 = Init.biblioteca.get_livro_por_cod(2)
+livro3 = Init.biblioteca.get_livro_por_cod(3)
+livro4 = Init.biblioteca.get_livro_por_cod(4)
+
+
+
+Init.biblioteca.atualizar_livro(
+    "capa", livro1.get_codigo(), resize_imagem("assets\\c0.jpg", 30, 30))
+Init.biblioteca.atualizar_livro(
+    "capa", livro2.get_codigo(), resize_imagem("assets\\c1.jpg", 30, 30))
+Init.biblioteca.atualizar_livro(
+    "capa", livro3.get_codigo(), resize_imagem("assets\\c2.jpg", 30, 30))
+Init.biblioteca.atualizar_livro(
+    "capa", livro4.get_codigo(), resize_imagem("assets\\c3.jpg", 30, 30))
+
+Init.biblioteca.atualizar_livro("largura_capa", livro1.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("largura_capa", livro2.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("largura_capa", livro3.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("largura_capa", livro4.get_codigo(), 30)
+
+
+Init.biblioteca.atualizar_livro("altura_capa", livro1.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("altura_capa", livro2.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("altura_capa", livro3.get_codigo(), 30)
+Init.biblioteca.atualizar_livro("altura_capa", livro4.get_codigo(), 30)
+
+
+livro1 = Init.biblioteca.get_livro_por_cod(1)
+livro2 = Init.biblioteca.get_livro_por_cod(2)
+livro3 = Init.biblioteca.get_livro_por_cod(3)
+livro4 = Init.biblioteca.get_livro_por_cod(4)
+
+capa1 = gerar_pixel(livro1.get_capa())
+capa2 = gerar_pixel(livro1.get_capa())
+capa3 = gerar_pixel(livro1.get_capa())
+capa4 = gerar_pixel(livro1.get_capa())
+
+livro1.set_capa_pixel(capa1)
+livro2.set_capa_pixel(capa2)
+livro3.set_capa_pixel(capa3)
+livro4.set_capa_pixel(capa4)

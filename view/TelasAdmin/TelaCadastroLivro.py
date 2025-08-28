@@ -3,7 +3,7 @@ from textual.containers import Container, HorizontalGroup
 from controller import Controller
 from textual import on
 from textual.message import Message
-
+from model import Init
 
 class CadastroRealizado(Message):
     def __init__(self, sender) -> None:
@@ -47,18 +47,14 @@ class TelaCadastroLivro(Container):
             case "bt_executar":
                 match self.query_one("#select_operacao", Select).value:
                     case "Cadastrar":
-                        if self.montou:
-                            self.montou = False
-                            self.query_one("#lbl_genero").remove()
-                            self.query_one("#inpt_genero").remove()
                         self.cadastro()
 
-                    case "Editar":                           
+                    case "Editar":
                         input_id = self.query_one("#input_id", Input).value
                         dados = []
                         for input in self.query(Input)[1:]:
                             dados.append(input.value.upper())
-                        if self.valor_select != "Novo Genero":
+                        if self.query_one("#slct_genero", Select).value != "Novo Genero":
                             if self.query_one("#slct_genero", Select).is_blank():
                                 dados.append("")
                             else:
@@ -70,7 +66,7 @@ class TelaCadastroLivro(Container):
                             self.montou = False
                             self.query_one("#lbl_genero").remove()
                             self.query_one("#inpt_genero").remove()
-                            
+
                         mensagem = Controller.editar_livro(input_id, dados)
                         self.notify(str(mensagem), markup=False)
                         self.on_mount()
@@ -86,11 +82,8 @@ class TelaCadastroLivro(Container):
                     case _:
                         self.notify("Nenhuma opção de operação selecionada")
 
-    montou = False
-    valor_select = ""
-
     def on_mount(self):
-        livros = Controller.get_livros_biblioteca()
+        livros = Init.biblioteca.get_lista_livros()
         lista_generos = []
         for livro in livros:
             if livro.get_genero() not in lista_generos:
@@ -126,15 +119,19 @@ class TelaCadastroLivro(Container):
         dados = []
         for input in self.query(Input)[1:]:
             dados.append(input.value.upper())
-        if self.valor_select != "Novo Genero":
+        if self.query_one("#slct_genero", Select).value != "Novo Genero":
             if self.query_one("#slct_genero", Select).is_blank():
                 dados.append("")
             else:
-                dados.append(self.query_one("#slct_genero", Select).value)
+                dados.append(self.query_one(
+                    "#slct_genero", Select).value)
         elif self.montou:
-            dados.append(self.query_one("#inpt_genero", Input).value)
-        else:
-            dados.append("")
+            dados.append(self.query_one(
+                "#inpt_genero", Input).value)
+            self.montou = False
+            self.query_one("#lbl_genero").remove()
+            self.query_one("#inpt_genero").remove()
+
         resultado = Controller.cadastrar_livro(dados)
         self.notify(str(resultado), markup=False)
         self.on_mount()

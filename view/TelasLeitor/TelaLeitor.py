@@ -3,6 +3,7 @@ from textual.widgets import TabbedContent, TabPane, Footer, Header
 from view.TelasLeitor import TelaDevolucao
 from view import TelaCadastroLeitor, TelaEstoque
 from view.TelasAdmin import TelaClientela
+from model import Init
 
 class TelaLeitor(Screen):
 
@@ -33,7 +34,7 @@ class TelaLeitor(Screen):
         tela_estoque.on_mount()
         
         
-    def on_cadastro_realizado(self):
-        tela_clientela = self.query_one(TelaClientela.TelaClientela)
-        tela_clientela.on_mount()
+    def on_cadastro_leitor_realizado(self):
+        tela_clientela = TelaClientela.TelaClientela()
+        tela_clientela.leitores = Init.biblioteca.get_lista_leitores()
      
