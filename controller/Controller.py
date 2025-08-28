@@ -4,6 +4,8 @@ from rich_pixels import Pixels
 from PIL import Image
 import os
 
+def get_usuario():
+    return Init.leitor1
 
 def get_capa(cod_livro):
     try:
@@ -102,11 +104,26 @@ if not Init.biblioteca.get_lista_livros():
     Init.livro3.set_altura_capa(30)
     Init.livro4.set_altura_capa(30)
 else:
+    e_exe, caminho = is_pyinstaller()
+    print(caminho)
+    print(f"{caminho}\\assets\\c0.jpg")
+    
     livro1 = Init.biblioteca.get_livro_por_cod(1)
     livro2 = Init.biblioteca.get_livro_por_cod(2)
     livro3 = Init.biblioteca.get_livro_por_cod(3)
     livro4 = Init.biblioteca.get_livro_por_cod(4)
-
+    
+    if e_exe:
+        livro1.set_capa(gerar_pixel(f"{caminho}\\assets\\c0.jpg", 30, 30))
+        livro2.set_capa(gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
+        livro3.set_capa(gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
+        livro4.set_capa(gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
+    else:
+        livro1.set_capa(gerar_pixel("assets\\c0.jpg", 30, 30))
+        livro2.set_capa(gerar_pixel("assets\\c1.jpg", 30, 30))
+        livro3.set_capa(gerar_pixel("assets\\c2.jpg", 30, 30))
+        livro4.set_capa(gerar_pixel("assets\\c3.jpg", 30, 30))
+    
     livro1.set_largura_capa(30)
     livro2.set_largura_capa(30)
     livro3.set_largura_capa(30)

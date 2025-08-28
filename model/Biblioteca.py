@@ -1,68 +1,10 @@
-import sqlite3
-import os
-import sys
-from model import Emprestimo, Livro, Leitor
+from model import Emprestimo, Banco
 
 
 class Biblioteca:
-
-    # self.encerrar_conexao()
-
+    
     def __init__(self):
-        e_exe, caminho = self.is_pyinstaller()
-        if e_exe:
-            self.conexao = sqlite3.connect(f"{caminho}\\data/Biblioteca.db")
-        else:
-            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
-        self.init_tabelas()
-        self.nome = ""
-
-    def is_pyinstaller(self):
-        if getattr(sys, 'frozen', False):
-            base_path = getattr(
-                sys, '_MEIPASS', os.path.dirname(sys.executable))
-            return True, base_path
-        else:
-            return False, ""
-
-    def init_tabelas(self):
-        cursor = self.conexao.cursor()
-        cursor.execute(f'''
-        CREATE TABLE IF NOT EXISTS Leitor (
-            nome VARCHAR(50) NOT NULL,
-            email VARCHAR(50) PRIMARY KEY
-        )
-        ''')
-
-        self.conexao.commit()
-
-        cursor.execute(f'''
-        CREATE TABLE IF NOT EXISTS Livro (
-            id_livro INTEGER PRIMARY KEY AUTOINCREMENT,
-            titulo VARCHAR NOT NULL, 
-            autor VARCHAR NOT NULL, 
-            genero VARCHAR NOT NULL, 
-            quantidade INT NOT NULL,
-            caminho_capa NULL, 
-            largura_capa NULL,
-            altura_capa NULL,
-            disponivel NOT NULL
-        )
-        ''')
-
-        cursor.execute(f'''
-        CREATE TABLE Emprestimo (
-            id_emprestimo INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_livro INTEGER NOT NULL,
-            email_leitor VARCHAR(50) NOT NULL,
-            data_para_devolucao DATE NOT NULL,
-            FOREIGN KEY (id_livro) REFERENCES Livro(id_livro),
-            FOREIGN KEY (email_leitor) REFERENCES Leitor(email)
-        );
-        ''')
-
-        self.conexao.commit()
-        cursor.close()
+        self.banco_dados = Banco.Banco()
 
     def emprestar(self, livro, leitor):
         if livro.is_disponivel():
@@ -82,109 +24,28 @@ class Biblioteca:
         return True
 
     def get_lista_livros(self):
-        lista = []
-        cursor = self.conexao.cursor()
-        cursor.execute("SELECT * FROM Livro")
-        resultados = cursor.fetchall()
-        cursor.close()
-        if not resultados:
-            return None
-        for dados in resultados:
-            livro = Livro.Livro(*dados[1:5])
-            livro.set_caminho_capa(dados[5])
-            livro.set_largura_capa(dados[6])
-            livro.set_altura_capa(dados[7])
-            livro.set_disponivel(dados[8])
-            lista.append(livro)
-        return lista
+        return self.banco_dados.get_lista_livros()
 
     def get_lista_leitores(self):
-        lista = []
-        cursor = self.conexao.cursor()
-        cursor.execute("SELECT * FROM Leitor")
-        resultados = cursor.fetchall()
-        cursor.close()
-        if not resultados:
-            return None
-        for dados in resultados:
-            lista.append(Leitor.Leitor(*dados))
-        return lista
+        return self.banco_dados.get_lista_leitores()
 
     def get_livro_por_cod(self, cod_livro):
-        cursor = self.conexao.cursor()
-        cursor.execute(f'SELECT * FROM Livro WHERE id_livro = ?', (cod_livro,))
-        registo = cursor.fetchone()
-        if not registo:
-            return None
-
-        livro = Livro.Livro(*registo[1:5])
-        livro.set_codigo(registo[0])
-        livro.set_caminho_capa(registo[5])
-        livro.set_largura_capa(registo[6])
-        livro.set_altura_capa(registo[7])
-        livro.set_disponivel(registo[8])
-
-        cursor.close()
-        return livro
+        return self.banco_dados.get_livro_por_cod(cod_livro)
 
     def get_leitor_por_email(self, email):
-        cursor = self.conexao.cursor()
-        cursor.execute(f'SELECT * FROM Leitor WHERE email = ?', (email,))
-        registo = cursor.fetchone()
-        if not registo:
-            return None
-        cursor.close()
-        return Leitor.Leitor(*registo)
+       return self.banco_dados.get_leitor_por_email(email)
 
     def add_livro(self, livro):
-        try:
-            cursor = self.conexao.cursor()
-            cursor.executemany(
-                f'INSERT INTO Livro (titulo, autor, genero, quantidade, caminho_capa, largura_capa, altura_capa, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_caminho_capa(), livro.get_largura_capa(), livro.get_altura_capa(), livro.is_disponivel())])
-            self.conexao.commit()
-            cursor.close()
-            return True
-        except:
-            return False
+       return self.banco_dados.add_livro(livro)
 
     def add_leitor(self, leitor):
-        try:
-            cursor = self.conexao.cursor()
-            cursor.executemany(
-                f'INSERT INTO Leitor (nome, email) VALUES (?, ?)', [(leitor.get_nome(), leitor.get_email())])
-            self.conexao.commit()
-            cursor.close()
-            return True
-        except:
-            return False
+       return self.banco_dados.add_leitor(leitor)
 
     def remove_livro(self, cod_livro):
-        try:
-            cursor = self.conexao.cursor()
-            sql_delete_query = """
-            DELETE FROM Livro
-            WHERE coluna1 = ?;
-            """
-            cursor.execute(sql_delete_query, cod_livro)
-            self.conexao.commit()
-            cursor.close()
-            return True
-        except:
-            return False
+       return self.banco_dados.remove_livro(cod_livro)
 
     def remove_leitor(self, email):
-        try:
-            cursor = self.conexao.cursor()
-            sql_delete_query = """
-            DELETE FROM Leitor
-            WHERE coluna1 = ?;
-            """
-            cursor.execute(sql_delete_query, email)
-            self.conexao.commit()
-            cursor.close()
-            return True
-        except:
-            return False
+       return self.banco_dados.remove_leitor(email)
 
     def __str__(self):
         return f"Biblioteca [Livros = {self.get_lista_livros()}, Leitores = {self.get_lista_leitores()}]"

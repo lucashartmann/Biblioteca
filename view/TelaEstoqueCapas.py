@@ -40,6 +40,7 @@ class TelaEstoqueCapas(Screen):
             lista = self.livros_filtrados
 
         for i, livro in enumerate(lista):
+            self.notify(livro.get_caminho_capa())
             if livro.get_capa():
                 # contador += 1
 

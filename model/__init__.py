@@ -25,7 +25,7 @@ class Init:
         biblioteca.add_livro(livro5)
         biblioteca.add_livro(livro6)
 
-    if not biblioteca.get_lista_livros():
+    if not biblioteca.get_lista_leitores():
         leitor1 = Leitor.Leitor("LUCAS", "LUCAS@EMAIL.COM")
         leitor2 = Leitor.Leitor("LEO", "LEO@EMAIL.COM")
         biblioteca.add_leitor(leitor1)

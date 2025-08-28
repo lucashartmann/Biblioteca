@@ -1,36 +1,31 @@
+from model.Banco import Banco
+
+
 class Leitor:
 
     def __init__(self, nome, email):
         self.nome = nome
         self.email = email
-        self.emprestimos = list()
+        self.banco_dados = Banco()
+        self.emprestimos = self.get_emprestimos_por_leitor()
 
     def add_emprestimo(self, emprestimo):
-        if emprestimo not in self.emprestimos:
-            self.emprestimos.append(emprestimo)
-            return True
-        return False
+        return self.banco_dados.add_emprestimo(emprestimo)
 
     def remove_emprestimo(self, emprestimo):
-        if emprestimo in self.emprestimos:
-            self.emprestimos.remove(emprestimo)
-            return True
-        return False
+        return self.banco_dados.remove_emprestimo(emprestimo.get_id())
 
     def get_emprestimo_por_livro(self, cod_livro):
-        for emprestimo in self.emprestimos:
-            if emprestimo.get_livro().get_codigo() == cod_livro:
-                return emprestimo
-        return None
+        return self.banco_dados.add_emprestimo(cod_livro)
 
     def get_emprestimo_por_id(self, id_emprestimo):
-        for emprestimo in self.emprestimos:
-            if emprestimo.get_id() == id_emprestimo:
-                return emprestimo
-        return None
+        return self.banco_dados.add_emprestimo(id_emprestimo)
 
     def get_lista_emprestimos(self):
-        return self.emprestimos
+        return self.banco_dados.get_lista_emprestimos()
+
+    def get_emprestimos_por_leitor(self):
+        return self.banco_dados.get_emprestimos_por_leitor(self.email)
 
     def get_nome(self):
         return self.nome

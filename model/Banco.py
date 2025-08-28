@@ -1,34 +1,283 @@
+import sqlite3
+import os
+import sys
+from model import Emprestimo, Livro, Leitor
+
+
+class Banco:
+
+    def __init__(self):
+        e_exe, caminho = self.is_pyinstaller()
+        if e_exe:
+            self.conexao = sqlite3.connect(f"{caminho}\\data/Biblioteca.db")
+        else:
+            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
+        self.cursor = self.conexao.cursor()
+        self.init_tabelas()
+
+    def is_pyinstaller(self):
+        if getattr(sys, 'frozen', False):
+            base_path = getattr(
+                sys, '_MEIPASS', os.path.dirname(sys.executable))
+            return True, base_path
+        else:
+            return False, ""
+
+    def init_tabelas(self):
+
+        self.cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS Leitor (
+                nome VARCHAR(50) NOT NULL,
+                email VARCHAR(50) PRIMARY KEY
+            )
+            ''')
+
+        self.conexao.commit()
+
+        self.cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS Livro (
+                id_livro INTEGER PRIMARY KEY AUTOINCREMENT,
+                titulo VARCHAR NOT NULL,
+                autor VARCHAR NOT NULL,
+                genero VARCHAR NOT NULL,
+                quantidade INT NOT NULL,
+                caminho_capa VARCHAR NULL,
+                largura_capa INT NULL,
+                altura_capa INT NULL,
+                disponivel NOT NULL
+            )
+            ''')
+
+        self.cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS Emprestimo (
+                id_emprestimo INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_livro INT NOT NULL,
+                email_leitor VARCHAR(50) NOT NULL,
+                data_para_devolucao DATE NOT NULL,
+                FOREIGN KEY (id_livro) REFERENCES Livro(id_livro),
+                FOREIGN KEY (email_leitor) REFERENCES Leitor(email)
+            );
+            ''')
+
+        self.conexao.commit()
+
+    def add_livro(self, livro):
+        try:
+
+            self.cursor.executemany(
+                f'INSERT INTO Livro (titulo, autor, genero, quantidade, caminho_capa, largura_capa, altura_capa, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_caminho_capa(), livro.get_largura_capa(), livro.get_altura_capa(), livro.is_disponivel())])
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def add_leitor(self, leitor):
+        try:
+
+            self.cursor.executemany(
+                f'INSERT INTO Leitor (nome, email) VALUES (?, ?)', [(leitor.get_nome(), leitor.get_email())])
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def add_emprestimo(self, emprestimo:Emprestimo.Emprestimo):
+        try:
+
+            self.cursor.executemany(
+                f'INSERT INTO Emprestimo (id_livro, email_leitor, data_para_devolucao) VALUES (?, ?, ?)', [(int(emprestimo.get_livro().get_codigo()), emprestimo.get_leitor().get_email(), emprestimo.get_data_para_devolucao())])
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def remove_livro(self, cod_livro):
+        try:
+
+            sql_delete_query = """
+                DELETE FROM Livro
+                WHERE coluna1 = ?;
+                """
+            self.cursor.execute(sql_delete_query, cod_livro)
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def remove_leitor(self, email):
+        try:
+
+            sql_delete_query = """
+                DELETE FROM Leitor
+                WHERE coluna1 = ?;
+                """
+            self.cursor.execute(sql_delete_query, email)
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def remove_emprestimo(self, id_emprestimo):
+        try:
+
+            sql_delete_query = """
+                DELETE FROM Emprestimo
+                WHERE coluna1 = ?;
+                """
+            self.cursor.execute(sql_delete_query, id_emprestimo)
+            self.conexao.commit()
+
+            return True
+        except:
+            return False
+
+    def get_emprestimo_por_livro(self, cod_livro):
+        self.cursor.execute(
+            f'SELECT * FROM Emprestimo WHERE id_livro = ?', (cod_livro,))
+        registro = self.cursor.fetchone()
+        if not registro:
+            return None
+
+        emprestimo = Emprestimo.Emprestimo(*registro[:-1])
+        emprestimo.set_data_para_devolucao(registro[-1])
+
+        return emprestimo
+
+    def get_emprestimo_por_id(self, id_emprestimo):
+        self.cursor.execute(
+            f'SELECT * FROM Emprestimo WHERE id_emprestimo = ?', (id_emprestimo,))
+        registro = self.cursor.fetchone()
+        if not registro:
+            return None
+
+        emprestimo = Emprestimo.Emprestimo(*registro[:-1])
+        emprestimo.set_data_para_devolucao(registro[-1])
+
+        return emprestimo
+
+    def get_emprestimos_por_leitor(self, email_leitor):
+        self.cursor.execute(
+            f'SELECT * FROM Emprestimo WHERE id_emprestimo = ?', (email_leitor,))
+        lista_registros = self.cursor.fetchall()
+        if not lista_registros:
+            return None
+
+        lista_emprestimos = []
+
+        for registro in lista_registros:
+            emprestimo = Emprestimo.Emprestimo(*registro[:-1])
+            emprestimo.set_data_para_devolucao(registro[-1])
+            lista_emprestimos.append(registro)
+
+        return lista_emprestimos
+
+    def get_lista_emprestimos(self):
+        lista = []
+
+        self.cursor.execute("SELECT * FROM Emprestimo")
+        resultados = self.cursor.fetchall()
+
+        if not resultados:
+            return None
+        for dados in resultados:
+            emprestimo = Emprestimo.Emprestimo(*dados[1:-1])
+            emprestimo.set_id(dados[0])
+            emprestimo.set_data_para_devolucao(dados[-1])
+            lista.append(emprestimo)
+        return lista
+
+    def get_lista_livros(self):
+        lista = []
+
+        self.cursor.execute("SELECT * FROM Livro")
+        resultados = self.cursor.fetchall()
+
+        if not resultados:
+            return None
+        for dados in resultados:
+            livro = Livro.Livro(*dados[1:5])
+            livro.set_codigo(dados[0])
+            livro.set_caminho_capa(dados[5])
+            livro.set_largura_capa(dados[6])
+            livro.set_altura_capa(dados[7])
+            if dados[8] == 1:
+                livro.set_disponivel(True)
+            else:
+                livro.set_disponivel(False)
+            lista.append(livro)
+        return lista
+
+    def get_lista_leitores(self):
+        lista = []
+
+        self.cursor.execute("SELECT * FROM Leitor")
+        resultados = self.cursor.fetchall()
+
+        if not resultados:
+            return None
+        for dados in resultados:
+            lista.append(Leitor.Leitor(*dados))
+        return lista
+
+    def get_livro_por_cod(self, cod_livro):
+
+        self.cursor.execute(
+            f'SELECT * FROM Livro WHERE id_livro = ?', (cod_livro,))
+        registro = self.cursor.fetchone()
+        if not registro:
+            return None
+
+        livro = Livro.Livro(*registro[1:5])
+        livro.set_codigo(registro[0])
+        livro.set_caminho_capa(registro[5])
+        livro.set_largura_capa(registro[6])
+        livro.set_altura_capa(registro[7])
+        livro.set_disponivel(registro[8])
+
+        return livro
+
+    def get_leitor_por_email(self, email):
+
+        self.cursor.execute(f'SELECT * FROM Leitor WHERE email = ?', (email,))
+        registro = self.cursor.fetchone()
+        if not registro:
+            return None
+
+        return Leitor.Leitor(*registro)
 
     # def consultar_multiplos_dados(self, nome_tabela, tipo_dado, lista_dados, quant):
-    #     cursor = self.get_cursor()
-        
+    #     self.cursor = self.get_self.cursor()
+
     #     placeholders = ', '.join(['?'] * len(lista_dados))  # Gera "?, ?, ?"
 
     #     query = f'SELECT * FROM {nome_tabela} WHERE {tipo_dado} IN ({placeholders})'
 
-    #     cursor.execute(query, lista_dados)
+    #     self.cursor.execute(query, lista_dados)
 
-    #     registros = cursor.fetchmany(quant)
+    #     registros = self.cursor.fetchmany(quant)
 
     #     self.salvar_alteracoes()
-    #     self.fechar_cursor(cursor)
+    #     self.fechar_self.cursor(self.cursor)
     #     # self.encerrar_conexao()
 
     #     return registros
 
+    def atualizar_tabela(self, nome_tabela, novo_valor, condicao):
+        sql_update_query = f"""
+        UPDATE {nome_tabela}
+        SET coluna1 = ?
+        WHERE coluna2 = ?;
+        """
 
-    # def atualizar_tabela(self, nome_tabela, novo_valor, condicao):
-    #     cursor = self.get_cursor()
+        dados = (novo_valor, condicao)
 
-    #     sql_update_query = f"""
-    #         UPDATE {nome_tabela}
-    #         SET coluna1 = {novo_valor}
-    #         WHERE coluna2 = {condicao};
-    #     """
+        self.cursor.execute(sql_update_query, dados)
 
-    #     cursor.execute(sql_update_query)
-    #     self.salvar_alteracoes()
-    #     self.fechar_cursor(cursor)
-    #     # self.encerrar_conexao()
+        self.cursor.commit()
 
-    #     return True
+
