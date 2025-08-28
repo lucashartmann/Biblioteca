@@ -114,16 +114,19 @@ else:
     livro4 = Init.biblioteca.get_livro_por_cod(4)
     
     if e_exe:
-        livro1.set_capa(gerar_pixel(f"{caminho}\\assets\\c0.jpg", 30, 30))
-        livro2.set_capa(gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
-        livro3.set_capa(gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
-        livro4.set_capa(gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro1.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c1.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro2.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c2.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro3.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c3.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro4.get_codigo(), gerar_pixel(f"{caminho}\\assets\\c4.jpg", 30, 30))
     else:
-        livro1.set_capa(gerar_pixel("assets\\c0.jpg", 30, 30))
-        livro2.set_capa(gerar_pixel("assets\\c1.jpg", 30, 30))
-        livro3.set_capa(gerar_pixel("assets\\c2.jpg", 30, 30))
-        livro4.set_capa(gerar_pixel("assets\\c3.jpg", 30, 30))
-    
+        Init.biblioteca.atualizar_livro("capa", livro1.get_codigo(), gerar_pixel("assets\\c0.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro2.get_codigo(), gerar_pixel("assets\\c1.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro3.get_codigo(), gerar_pixel("assets\\c2.jpg", 30, 30))
+        Init.biblioteca.atualizar_livro("capa", livro4.get_codigo(), gerar_pixel("assets\\c3.jpg", 30, 30))
+
+    Init.biblioteca.atualizar_livro("largura_capa", livro1.get_codigo(), 30)
+    Init.biblioteca.atualizar_livro("altura_capa", livro1.get_codigo(), 30)
+
     livro1.set_largura_capa(30)
     livro2.set_largura_capa(30)
     livro3.set_largura_capa(30)

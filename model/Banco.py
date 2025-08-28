@@ -41,6 +41,7 @@ class Banco:
                 autor VARCHAR NOT NULL,
                 genero VARCHAR NOT NULL,
                 quantidade INT NOT NULL,
+                capa NULL,
                 caminho_capa VARCHAR NULL,
                 largura_capa INT NULL,
                 altura_capa INT NULL,
@@ -65,7 +66,7 @@ class Banco:
         try:
 
             self.cursor.executemany(
-                f'INSERT INTO Livro (titulo, autor, genero, quantidade, caminho_capa, largura_capa, altura_capa, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_caminho_capa(), livro.get_largura_capa(), livro.get_altura_capa(), livro.is_disponivel())])
+                f'INSERT INTO Livro (titulo, autor, genero, quantidade, capa, caminho_capa, largura_capa, altura_capa, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_capa(), livro.get_caminho_capa(), livro.get_largura_capa(), livro.get_altura_capa(), livro.is_disponivel())])
             self.conexao.commit()
 
             return True
@@ -202,10 +203,11 @@ class Banco:
         for dados in resultados:
             livro = Livro.Livro(*dados[1:5])
             livro.set_codigo(dados[0])
-            livro.set_caminho_capa(dados[5])
-            livro.set_largura_capa(dados[6])
-            livro.set_altura_capa(dados[7])
-            if dados[8] == 1:
+            livro.set_capa(dados[5])
+            livro.set_caminho_capa(dados[6])
+            livro.set_largura_capa(dados[7])
+            livro.set_altura_capa(dados[8])
+            if dados[9] == 1:
                 livro.set_disponivel(True)
             else:
                 livro.set_disponivel(False)
@@ -267,17 +269,26 @@ class Banco:
 
     #     return registros
 
-    def atualizar_tabela(self, nome_tabela, novo_valor, condicao):
-        sql_update_query = f"""
-        UPDATE {nome_tabela}
-        SET coluna1 = ?
-        WHERE coluna2 = ?;
-        """
+    def atualizar_livro(self, tipo_dado, condicao, novo_valor):
+        # sql_update_query = f"""
+        # UPDATE Livro
+        # SET quantidade = ?
+        # WHERE id_livro = ?;
+        # """
+        try:
+            sql_update_query = f"""
+            UPDATE Livro
+            SET {tipo_dado} = ?
+            WHERE id_livro = ?;
+            """
 
-        dados = (novo_valor, condicao)
+            dados = (novo_valor, condicao)
 
-        self.cursor.execute(sql_update_query, dados)
+            self.cursor.execute(sql_update_query, dados)
 
-        self.cursor.commit()
+            self.cursor.commit()
+            return True
+        except:
+            return False
 
 
