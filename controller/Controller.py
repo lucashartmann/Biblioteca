@@ -171,6 +171,7 @@ def excluir_leitor(email):
         return "ERRO. Email do leitor está vazio"
 
     remocao = Init.biblioteca.remove_leitor(email)
+    Init.leitor1 = None
 
     if remocao:
         return f"Leitor '{email}' removido com sucesso"
