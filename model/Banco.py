@@ -3,13 +3,24 @@ import os
 import sys
 from model import Emprestimo, Livro, Leitor
 
-
 class Banco:
 
     def __init__(self):
-        self.conexao = sqlite3.connect(f"data/Biblioteca.db")
+        e_exe, caminho = self.is_pyinstaller()
+        if e_exe:
+            self.conexao = sqlite3.connect(f"{caminho}\\data\\Biblioteca.db")
+        else:
+            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
         self.cursor = self.conexao.cursor()
         self.init_tabelas()
+
+    def is_pyinstaller(self):
+        if getattr(sys, 'frozen', False):
+            base_path = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
+            return True, base_path
+        else:
+            return False, ""
+
 
     def init_tabelas(self):
 

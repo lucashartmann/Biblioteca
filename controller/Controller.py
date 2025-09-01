@@ -280,12 +280,18 @@ livro2 = Init.biblioteca.get_livro_por_cod(2)
 livro3 = Init.biblioteca.get_livro_por_cod(3)
 livro4 = Init.biblioteca.get_livro_por_cod(4)
 
+e_exe, caminho = is_pyinstaller()
 
-livro1.set_capa_binaria("assets/c0.jpg")
-livro2.set_capa_binaria("assets/c1.jpg")
-livro3.set_capa_binaria("assets/c2.jpg")
-livro4.set_capa_binaria("assets/c3.jpg")
-
+if e_exe:
+    livro1.set_capa_binaria(f"{caminho}\\assets\\c0.jpg")
+    livro2.set_capa_binaria(f"{caminho}\\assets\\c1.jpg")
+    livro3.set_capa_binaria(f"{caminho}\\assets\\c2.jpg")
+    livro4.set_capa_binaria(f"{caminho}\\assets\\c3.jpg")
+else: 
+    livro1.set_capa_binaria("assets/c0.jpg")
+    livro2.set_capa_binaria("assets/c1.jpg")
+    livro3.set_capa_binaria("assets/c2.jpg")
+    livro4.set_capa_binaria("assets/c3.jpg")
 
 Init.biblioteca.atualizar_livro(
     "capa", livro1.get_codigo(), livro1.get_capa_binaria())

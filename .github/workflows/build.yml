@@ -31,7 +31,8 @@ jobs:
               --icon=assets/livros.ico `
               --add-data "assets;assets" `
               --add-data "view;view" `
-              --hidden-import textual.widgets._tab_pane Main.py
+              --hidden-import textual.widgets._tab_pane ` 
+              --name Biblioteca Main.py
 
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4
