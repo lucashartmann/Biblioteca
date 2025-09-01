@@ -3,24 +3,16 @@ import os
 import sys
 from model import Emprestimo, Livro, Leitor
 
+
 class Banco:
 
     def __init__(self):
-        e_exe, caminho = self.is_pyinstaller()
-        if e_exe:
-            self.conexao = sqlite3.connect(f"{caminho}\\data\\Biblioteca.db")
-        else:
-            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
+        diretorio = "data"
+        if not os.path.isdir(diretorio):
+            os.makedirs(diretorio)
+        self.conexao = sqlite3.connect(f"data/Biblioteca.db")
         self.cursor = self.conexao.cursor()
         self.init_tabelas()
-
-    def is_pyinstaller(self):
-        if getattr(sys, 'frozen', False):
-            base_path = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
-            return True, base_path
-        else:
-            return False, ""
-
 
     def init_tabelas(self):
 
@@ -30,7 +22,6 @@ class Banco:
                 email VARCHAR(50) PRIMARY KEY
             )
             ''')
-
 
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Livro (
@@ -43,7 +34,6 @@ class Banco:
                 disponivel NOT NULL
             )
             ''')
-
 
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Emprestimo (
@@ -92,7 +82,7 @@ class Banco:
         try:
             sql_delete_query = """
                 DELETE FROM Livro
-                WHERE coluna1 = ?;
+                WHERE id_livro = ?;
                 """
             self.cursor.execute(sql_delete_query, cod_livro)
             self.conexao.commit()
@@ -105,7 +95,7 @@ class Banco:
         try:
             sql_delete_query = """
                 DELETE FROM Leitor
-                WHERE coluna1 = ?;
+                WHERE email = ?;
                 """
             self.cursor.execute(sql_delete_query, email)
             self.conexao.commit()
@@ -118,7 +108,7 @@ class Banco:
         try:
             sql_delete_query = """
                 DELETE FROM Emprestimo
-                WHERE coluna1 = ?;
+                WHERE id_emprestimo = ?;
                 """
             self.cursor.execute(sql_delete_query, id_emprestimo)
             self.conexao.commit()
