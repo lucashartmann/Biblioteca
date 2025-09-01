@@ -27,8 +27,6 @@ class TelaCadastroLivro(Container):
         yield Input(placeholder="Quantidade aqui", id="inpt_quant")
         yield Label("Caminho da Capa:")
         yield Input(placeholder="Caminho aqui")
-        yield Input(placeholder="Largura aqui")
-        yield Input(placeholder="Altura aqui")
         yield Select([("genero", 'genero')], id="slct_genero")
         yield HorizontalGroup(id="hg_genero")
         yield Select([("Cadastrar", 'Cadastrar'), ("Editar", "Editar"), ("Remover", "Remover")], id="select_operacao")

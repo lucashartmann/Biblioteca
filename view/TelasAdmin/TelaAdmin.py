@@ -1,7 +1,7 @@
 from textual.screen import Screen
 from textual.widgets import TabbedContent, TabPane, Footer, Header
 from view.TelasAdmin import TelaCadastroLivro, TelaClientela
-from view import TelaCadastroLeitor, TelaEstoque, TelaEstoqueCapas
+from view import TelaCadastroLeitor, TelaEstoque, TelaEmprestimos
 
 
 class TelaAdmin(Screen):
@@ -19,12 +19,13 @@ class TelaAdmin(Screen):
                 yield TelaEstoque.TelaEstoque()
             with TabPane("Clientela"):
                 yield TelaClientela.TelaClientela()
+            with TabPane("Empréstimos"):
+                yield TelaEmprestimos.TelaEmprestimos()
         yield Footer()
-        
+
     def on_cadastro_realizado(self):
         tela_estoque = self.query_one(TelaEstoque.TelaEstoque)
         tela_estoque.on_mount()
-
 
     def on_mount(self):
         self.sub_title = "Tela Administrador"

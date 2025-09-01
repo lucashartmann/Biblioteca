@@ -49,18 +49,18 @@ TelaLeitor Select Static{
 
 # TelaDevolucao
 
-TelaDevolucao TextArea {
+TelaEmprestimos TextArea {
     height: 5;
 }
 
-TelaDevolucao Input {
+TelaEmprestimos Input {
     width: 84%;
 }
 
-TelaDevolucao #hg_pesquisa {
+TelaEmprestimos #hg_pesquisa {
     margin: 1;
 }
 
-TelaDevolucao #bt_devolver {
+TelaEmprestimos #bt_devolver {
     margin-right: 1;
 }

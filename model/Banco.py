@@ -7,21 +7,9 @@ from model import Emprestimo, Livro, Leitor
 class Banco:
 
     def __init__(self):
-        e_exe, caminho = self.is_pyinstaller()
-        if e_exe:
-            self.conexao = sqlite3.connect(f"{caminho}\\data/Biblioteca.db")
-        else:
-            self.conexao = sqlite3.connect(f"data/Biblioteca.db")
+        self.conexao = sqlite3.connect(f"data/Biblioteca.db")
         self.cursor = self.conexao.cursor()
         self.init_tabelas()
-
-    def is_pyinstaller(self):
-        if getattr(sys, 'frozen', False):
-            base_path = getattr(
-                sys, '_MEIPASS', os.path.dirname(sys.executable))
-            return True, base_path
-        else:
-            return False, ""
 
     def init_tabelas(self):
 
@@ -32,7 +20,6 @@ class Banco:
             )
             ''')
 
-        self.conexao.commit()
 
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Livro (
@@ -41,15 +28,11 @@ class Banco:
                 autor VARCHAR NOT NULL,
                 genero VARCHAR NOT NULL,
                 quantidade INT NOT NULL,
-                capa Longblob,
-                caminho_capa VARCHAR NULL,
-                largura_capa INT NULL,
-                altura_capa INT NULL,
+                capa Longblob NULL,
                 disponivel NOT NULL
             )
             ''')
 
-        self.conexao.commit()
 
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Emprestimo (
@@ -67,7 +50,7 @@ class Banco:
     def add_livro(self, livro):
         try:
             self.cursor.executemany(
-                f'INSERT INTO Livro (titulo, autor, genero, quantidade, capa, caminho_capa, largura_capa, altura_capa, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_capa(), livro.get_caminho_capa(), livro.get_largura_capa(), livro.get_altura_capa(), livro.is_disponivel())])
+                f'INSERT INTO Livro (titulo, autor, genero, quantidade, capa, disponivel) VALUES (?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_capa_binaria(), livro.is_disponivel())])
             self.conexao.commit()
             return True
         except Exception as e:
@@ -181,6 +164,7 @@ class Banco:
             emprestimo.set_id(dados[0])
             emprestimo.set_data_para_devolucao(dados[-1])
             lista.append(emprestimo)
+        print(lista)
         return lista
 
     def get_lista_livros(self):
@@ -192,11 +176,8 @@ class Banco:
         for dados in resultados:
             livro = Livro.Livro(*dados[1:5])
             livro.set_codigo(dados[0])
-            livro.set_capa(dados[5])
-            livro.set_caminho_capa(dados[6])
-            livro.set_largura_capa(dados[7])
-            livro.set_altura_capa(dados[8])
-            if dados[9] == 1:
+            livro.set_capa_binaria(dados[5])
+            if dados[-1] == 1:
                 livro.set_disponivel(True)
             else:
                 livro.set_disponivel(False)
@@ -221,11 +202,8 @@ class Banco:
             return None
         livro = Livro.Livro(*registro[1:5])
         livro.set_codigo(registro[0])
-        livro.set_capa(registro[5])
-        livro.set_caminho_capa(registro[6])
-        livro.set_largura_capa(registro[7])
-        livro.set_altura_capa(registro[8])
-        if registro[9] == 1:
+        livro.set_capa_binaria(registro[5])
+        if registro[-1] == 1:
             livro.set_disponivel(True)
         else:
             livro.set_disponivel(False)
@@ -252,7 +230,7 @@ class Banco:
         except Exception as e:
             print("ERRO ao atualizar livro", e)
             return False
-        
+
     def atualizar_leitor(self, tipo_dado, condicao, novo_valor):
         try:
             sql_update_query = f"""

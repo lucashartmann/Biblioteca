@@ -1,53 +1,39 @@
+import os
+from PIL import Image
+
+
 class Livro:
 
     def __init__(self, titulo, autor, genero, quant):
         self.codigo = 0
-        self.capa_pixel = ""
-        self.capa = ""
-        self.caminho_capa = ""
-        self.largura_capa = 0
-        self.altura_capa = 0
+        self.capa_binaria = ""
         self.autor = autor
         self.genero = genero
         self.titulo = titulo
         self.quant = quant
         self.disponivel = True
-        
-    def set_capa_pixel(self, pixel):
-        self.capa_pixel = pixel
 
-    def get_capa_pixel(self):
-        return self.capa_pixel
-    
+    def set_capa_binaria(self, caminho):
+            if type(caminho) == str:
+                if "." in caminho or "/" in caminho or "//" in caminho:
+                    with open(caminho, 'rb') as f:
+                        binario_imagem = f.read()
+                    self.capa_binaria = binario_imagem
+            else:
+                    self.capa_binaria = caminho
+        
+
     def set_codigo(self, novo_codigo):
         self.codigo = novo_codigo
-        
+
     def get_codigo(self):
         return self.codigo
 
-    def get_largura_capa(self):
-        return self.largura_capa
-
-    def get_altura_capa(self):
-        return self.altura_capa
-
-    def set_largura_capa(self, novo_largura_capa):
-        self.largura_capa = novo_largura_capa
-
-    def set_altura_capa(self, novo_altura_capa):
-        self.altura_capa = novo_altura_capa
-
-    def set_caminho_capa(self, novo_caminho):
-        self.caminho_capa = novo_caminho
-        
-    def get_caminho_capa(self):
-        return self.caminho_capa
-    
     def set_disponivel(self, novo_disponivel):
         self.disponivel = novo_disponivel
 
-    def get_capa(self):
-        return self.capa
+    def get_capa_binaria(self):
+        return self.capa_binaria
 
     def get_autor(self):
         return self.autor

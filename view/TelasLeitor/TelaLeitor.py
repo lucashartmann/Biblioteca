@@ -1,7 +1,6 @@
 from textual.screen import Screen
 from textual.widgets import TabbedContent, TabPane, Footer, Header
-from view.TelasLeitor import TelaDevolucao
-from view import TelaCadastroLeitor, TelaEstoque
+from view import TelaCadastroLeitor, TelaEstoque, TelaEmprestimos
 from view.TelasAdmin import TelaClientela
 from model import Init
 
@@ -15,7 +14,7 @@ class TelaLeitor(Screen):
             with TabPane("Retirar Livro"):
                 yield TelaEstoque.TelaEstoque()
             with TabPane("Devolver Livro"):
-                yield TelaDevolucao.TelaDevolucao()
+                yield TelaEmprestimos.TelaEmprestimos()
             with TabPane("Se Cadastrar"):
                 yield TelaCadastroLeitor.TelaCadastroLeitor()
         yield Footer()

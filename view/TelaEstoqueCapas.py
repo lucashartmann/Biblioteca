@@ -6,6 +6,7 @@ from textual.containers import VerticalScroll, HorizontalGroup
 from textual.binding import Binding
 from model import Init
 from textual.message import Message
+import os
 
 
 class RetiradaRealizada(Message):
@@ -13,7 +14,8 @@ class RetiradaRealizada(Message):
         super().__init__()
         self.sender = sender
 
-# assets/c4.jpg 
+# assets/c4.jpg
+
 
 class TelaEstoqueCapas(Screen):
 
@@ -39,40 +41,47 @@ class TelaEstoqueCapas(Screen):
         if len(self.livros_filtrados) > 0:
             lista = self.livros_filtrados
 
-        for i, livro in enumerate(lista):
-            self.notify(livro.get_caminho_capa())
-            if livro.get_capa_pixel():
-                # contador += 1
+        for livro in lista:
+            if livro.get_capa_binaria():
+                with open('retrieved_image.jpg', 'wb') as f:
+                    f.write(livro.get_capa_binaria())
 
-                static = Static(livro.get_capa())
-                static.styles.width = livro.get_largura_capa()
-                static.styles.height = livro.get_altura_capa()
+                pixel = Controller.gerar_pixel(
+                    Controller.resize("retrieved_image.jpg"))
+                
+                os.remove("retrieved_image.jpg")
 
-                list_item = ListItem(static)
-                list_item.styles.width = livro.get_largura_capa() - 10
-                list_item.styles.height = livro.get_altura_capa() - 15
+                if pixel:
+                    # contador += 1
 
-                list_view.append(list_item)
+                    static = Static(pixel)
+                    static.styles.width = 30
+                    static.styles.height = 30
 
-                # if contador == 3:
-                #     prateleira_pixels = Controller.gerar_pixel("assets/prat.png", 60, 200)
-                #     if prateleira_pixels:
-                #         prateleira_static = Static(prateleira_pixels, id=f"prateleira{i}")
-                #         prateleira_item = ListItem(prateleira_static, id=f"prateleira_item{i}")
-                #         list_view.append(prateleira_item)
-                #     contador = 0
+                    list_item = ListItem(static)
+                    list_item.styles.width = 30 - 10
+                    list_item.styles.height = 30 - 15
+
+                    list_view.append(list_item)
+
+                    # if contador == 3:
+                    #     prateleira_pixels = Controller.gerar_pixel("assets/prat.png", 60, 200)
+                    #     if prateleira_pixels:
+                    #         prateleira_static = Static(prateleira_pixels, id=f"prateleira{i}")
+                    #         prateleira_item = ListItem(prateleira_static, id=f"prateleira_item{i}")
+                    #         list_view.append(prateleira_item)
+                    #     contador = 0
 
     def _on_screen_resume(self):
         self.livros = Init.biblioteca.get_lista_livros()
-        
+
         if Init.usuario_leitor:
             lista_usuario = []
             for livro in self.livros:
                 if livro.is_disponivel():
                     lista_usuario.append(livro)
             self.livros = lista_usuario
-            
-            
+
         lista_categorias = []
         for livro in self.livros:
             if livro.get_genero() not in lista_categorias:
