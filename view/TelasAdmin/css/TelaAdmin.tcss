@@ -1,4 +1,3 @@
-
 TelaAdmin {
     background: rgba(45, 145, 163, 1);
     color: black;
@@ -92,6 +91,38 @@ TelaClientela Input {
 }
 
 TelaClientela #hg_pesquisa {
+    margin: 1;
+}
+
+# TelaEmprestimos
+
+TelaEmprestimos {
+    background: rgba(45, 145, 163, 1);
+    color: black;
+}
+
+TelaEmprestimos Footer {
+    background: rgba(30, 91, 102, 1);
+}
+
+TelaEmprestimos Header {
+    background: rgba(30, 91, 102, 1);
+}
+
+TelaEmprestimos Input {
+    width: 92%
+}
+
+TelaEmprestimos TextArea {
+    height: 5;
+    margin: 1;
+}
+
+TelaEmprestimos #hg_pesquisa {
+    margin: 1;
+}
+
+TelaEmprestimos Pretty {
     margin: 1;
 }
 

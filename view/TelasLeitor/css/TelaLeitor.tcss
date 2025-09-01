@@ -51,6 +51,7 @@ TelaLeitor Select Static{
 
 TelaEmprestimos TextArea {
     height: 5;
+    margin: 1;
 }
 
 TelaEmprestimos Input {

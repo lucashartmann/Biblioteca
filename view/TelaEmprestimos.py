@@ -21,8 +21,6 @@ class TelaEmprestimos(VerticalScroll):
                 yield Button("Devolver", id="bt_devolver")
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(read_only=True)
-        with HorizontalGroup(id="container"):
-            pass
 
     if Init.usuario_leitor:
         emprestimos = Init.leitor1.get_lista_emprestimos()
