@@ -4,6 +4,7 @@ from controller import Controller
 from model import Init
 from textual.message import Message
 
+
 class DevolucaoRealizada(Message):
     def __init__(self, sender) -> None:
         super().__init__()
@@ -42,7 +43,11 @@ class TelaEmprestimos(VerticalScroll):
             TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, nome: lucas' \n\nQuantidade de Empréstimos: {quant}"
 
     def on_mount(self):
-        self.emprestimos = Init.leitor1.get_lista_emprestimos()
+        if Init.usuario_leitor:
+            self.emprestimos = Init.leitor1.get_lista_emprestimos()
+        else:
+            self.emprestimos = Init.biblioteca.get_lista_emprestimos()
+            
         emprestimos_str = []
         if self.montou:
             self.query_one(Pretty).update(emprestimos_str)

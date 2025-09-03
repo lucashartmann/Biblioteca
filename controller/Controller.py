@@ -5,6 +5,13 @@ from PIL import Image
 import os
 
 
+def fechar_banco():
+    if Init.biblioteca.get_lista_leitores():
+        for leitor in Init.biblioteca.get_lista_leitores():
+            leitor.fechar_banco()
+    Init.biblioteca.fechar_banco()
+
+
 def resize(caminho):
     size = 30, 30
 
@@ -288,7 +295,7 @@ if e_exe:
     livro2.set_capa_binaria(f"{caminho}\\assets\\c1.jpg")
     livro3.set_capa_binaria(f"{caminho}\\assets\\c2.jpg")
     livro4.set_capa_binaria(f"{caminho}\\assets\\c3.jpg")
-else: 
+else:
     livro1.set_capa_binaria("assets/c0.jpg")
     livro2.set_capa_binaria("assets/c1.jpg")
     livro3.set_capa_binaria("assets/c2.jpg")

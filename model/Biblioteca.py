@@ -12,6 +12,9 @@ class Biblioteca:
             livro.atualizar_disponivel()
             return Emprestimo.Emprestimo(livro, leitor)
         return None
+    
+    def fechar_banco(self):
+        self.banco_dados.encerrar()
 
     def devolver(self, emprestimo):
         leitor = emprestimo.get_leitor()
@@ -22,6 +25,9 @@ class Biblioteca:
         if not self.get_livro_por_cod(livro.get_codigo()):
             self.add_livro(livro)
         return True
+    
+    def get_lista_emprestimos(self):
+        return self.banco_dados.get_lista_emprestimos()
 
     def get_lista_livros(self):
         return self.banco_dados.get_lista_livros()

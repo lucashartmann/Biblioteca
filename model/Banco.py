@@ -48,6 +48,10 @@ class Banco:
 
         self.conexao.commit()
 
+    def encerrar(self):
+        self.cursor.close()
+        self.conexao.close()
+
     def add_livro(self, livro):
         try:
             self.cursor.executemany(
@@ -123,7 +127,10 @@ class Banco:
         registro = self.cursor.fetchone()
         if not registro:
             return None
-        emprestimo = Emprestimo.Emprestimo(*registro[:-1])
+        livro = self.get_livro_por_cod(registro[1])
+        leitor = self.get_leitor_por_email(registro[2])
+        emprestimo = Emprestimo.Emprestimo(livro, leitor)
+        emprestimo.set_id(registro[0])
         emprestimo.set_data_para_devolucao(registro[-1])
         return emprestimo
 
@@ -133,7 +140,10 @@ class Banco:
         registro = self.cursor.fetchone()
         if not registro:
             return None
-        emprestimo = Emprestimo.Emprestimo(*registro[:-1])
+        livro = self.get_livro_por_cod(registro[1])
+        leitor = self.get_leitor_por_email(registro[2])
+        emprestimo = Emprestimo.Emprestimo(livro, leitor)
+        emprestimo.set_id(registro[0])
         emprestimo.set_data_para_devolucao(registro[-1])
         return emprestimo
 
@@ -161,11 +171,12 @@ class Banco:
         if not resultados:
             return None
         for dados in resultados:
-            emprestimo = Emprestimo.Emprestimo(*dados[1:-1])
+            livro = self.get_livro_por_cod(dados[1])
+            leitor = self.get_leitor_por_email(dados[2])
+            emprestimo = Emprestimo.Emprestimo(livro, leitor)
             emprestimo.set_id(dados[0])
             emprestimo.set_data_para_devolucao(dados[-1])
             lista.append(emprestimo)
-        print(lista)
         return lista
 
     def get_lista_livros(self):

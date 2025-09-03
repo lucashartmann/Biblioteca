@@ -33,13 +33,14 @@ class Init:
 
         livro_um = biblioteca.get_livro_por_cod(1)
         livro_dois = biblioteca.get_livro_por_cod(2)
+        livro_tres = biblioteca.get_livro_por_cod(3)
 
         emprestimo1 = biblioteca.emprestar(livro_um, leitor1)
         emprestimo2 = biblioteca.emprestar(livro_dois, leitor1)
+        emprestimo3 = biblioteca.emprestar(livro_tres, leitor2)
 
         adicao_emprestimo = leitor1.add_emprestimo(emprestimo1)
-
+        adicao_emprestimo1 = leitor2.add_emprestimo(emprestimo3)
         leitor1.add_emprestimo(emprestimo2)
-        leitor1.atualizar_emprestimos()
     else:
         leitor1 = biblioteca.get_leitor_por_email("LUCAS@EMAIL.COM")
