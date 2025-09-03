@@ -33,6 +33,8 @@ class TelaEstoqueCapas(Screen):
     select_evento = ""
     montou = False
 
+    livros_etiquetados = dict()
+
     def atualizar_capas(self):
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
@@ -42,17 +44,9 @@ class TelaEstoqueCapas(Screen):
             lista = self.livros_filtrados
 
         for livro in lista:
-            if livro.get_capa_binaria():
-                with open('retrieved_image.jpg', 'wb') as f:
-                    f.write(livro.get_capa_binaria())
-
-                pixel = Controller.gerar_pixel(
-                    Controller.resize("retrieved_image.jpg"))
-                
-                os.remove("retrieved_image.jpg")
-
+            if livro.get_codigo() in self.livros_etiquetados.keys():
+                pixel = self.livros_etiquetados[livro.get_codigo()]
                 if pixel:
-                    # contador += 1
 
                     static = Static(pixel)
                     static.styles.width = 30
@@ -64,16 +58,47 @@ class TelaEstoqueCapas(Screen):
 
                     list_view.append(list_item)
 
-                    # if contador == 3:
-                    #     prateleira_pixels = Controller.gerar_pixel("assets/prat.png", 60, 200)
-                    #     if prateleira_pixels:
-                    #         prateleira_static = Static(prateleira_pixels, id=f"prateleira{i}")
-                    #         prateleira_item = ListItem(prateleira_static, id=f"prateleira_item{i}")
-                    #         list_view.append(prateleira_item)
-                    #     contador = 0
+    def on_mount(self):
+        self.livros = Init.biblioteca.get_lista_livros()
+        for livro in self.livros:
+            if livro.get_capa_binaria():
+                caminho = f'{livro.get_codigo()}.jpg'
+                with open(caminho, 'wb') as f:
+                    f.write(livro.get_capa_binaria())
+
+                pixel = Controller.gerar_pixel(
+                    Controller.resize(caminho))
+
+                self.livros_etiquetados[livro.get_codigo()] = pixel
+
+                os.remove(caminho)
+                
+                try:
+                        os.remove(f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
+                except FileNotFoundError:
+                        pass
 
     def _on_screen_resume(self):
         self.livros = Init.biblioteca.get_lista_livros()
+
+        for livro in self.livros:
+            if livro.get_codigo() not in self.livros_etiquetados.keys():
+                if livro.get_capa_binaria():
+                    caminho = f'{livro.get_codigo()}.jpg'
+                    with open(caminho, 'wb') as f:
+                        f.write(livro.get_capa_binaria())
+
+                    pixel = Controller.gerar_pixel(
+                        Controller.resize(caminho))
+
+                    self.livros_etiquetados[livro.get_codigo()] = pixel
+                    
+                    
+                    os.remove(caminho)
+                    try:
+                        os.remove(f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
+                    except FileNotFoundError:
+                        pass
 
         if Init.usuario_leitor:
             lista_usuario = []

@@ -3,8 +3,6 @@ from textual.containers import HorizontalGroup, VerticalScroll
 from controller import Controller
 from model import Init
 from textual.message import Message
-from model.Banco import Banco
-
 
 class DevolucaoRealizada(Message):
     def __init__(self, sender) -> None:
