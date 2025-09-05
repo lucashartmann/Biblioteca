@@ -47,21 +47,25 @@ TelaLeitor Select Static{
     color: white;
 }
 
-# TelaDevolucao
-
-TelaEmprestimos TextArea {
-    height: 5;
-    margin: 1;
-}
+# TelaEmprestimos
 
 TelaEmprestimos Input {
     width: 84%;
 }
 
-TelaEmprestimos #hg_pesquisa {
-    margin: 1;
-}
-
 TelaEmprestimos #bt_devolver {
     margin-right: 1;
+}
+
+TelaEmprestimos {
+    background: rgba(163, 45, 45, 1);
+}
+
+TelaEmprestimos Footer {
+    background: rgba(109, 35, 35, 1);
+
+}
+
+TelaEmprestimos Header {
+    background: rgba(109, 35, 35, 1);
 }

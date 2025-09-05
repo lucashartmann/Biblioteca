@@ -25,6 +25,7 @@ TelaInicial #bt_sair {
 
 TelaEstoque TextArea {
     height: 5;
+    margin: 1;
 }
 
 TelaEstoque Input {
@@ -58,5 +59,21 @@ TelaCadastroLeitor Select {
     width: 70%;
 }
 
+# TelaEmprestimos
 
+TelaEmprestimos {
+    color: black;
+}
 
+TelaEmprestimos TextArea {
+    height: 5;
+    margin: 1;
+}
+
+TelaEmprestimos #hg_pesquisa {
+    margin: 1;
+}
+
+TelaEmprestimos Pretty {
+    margin: 1;
+}

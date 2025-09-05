@@ -79,6 +79,7 @@ TelaClientela  {
 }
 
 TelaClientela TextArea {
+    margin: 1;
     height: 5;
 }
 
@@ -98,7 +99,6 @@ TelaClientela #hg_pesquisa {
 
 TelaEmprestimos {
     background: rgba(45, 145, 163, 1);
-    color: black;
 }
 
 TelaEmprestimos Footer {
@@ -112,18 +112,3 @@ TelaEmprestimos Header {
 TelaEmprestimos Input {
     width: 92%
 }
-
-TelaEmprestimos TextArea {
-    height: 5;
-    margin: 1;
-}
-
-TelaEmprestimos #hg_pesquisa {
-    margin: 1;
-}
-
-TelaEmprestimos Pretty {
-    margin: 1;
-}
-
-
