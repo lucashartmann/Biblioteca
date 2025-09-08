@@ -18,15 +18,10 @@ class Leitor:
         return self.banco_dados.remove_emprestimo(emprestimo.get_id())
 
     def get_emprestimo_por_livro(self, cod_livro):
-        return self.banco_dados.add_emprestimo(cod_livro)
+        return self.banco_dados.get_emprestimo_por_livro(cod_livro)
 
     def get_emprestimo_por_id(self, id_emprestimo):
-        return self.banco_dados.add_emprestimo(id_emprestimo)
-
-    def atualizar_emprestimos(self):
-        consulta = self.banco_dados.get_emprestimos_por_leitor(self.email)
-        if consulta:
-            self.emprestimos = consulta
+        return self.banco_dados.get_emprestimo_por_id(id_emprestimo)
 
     def get_lista_emprestimos(self):
         return self.banco_dados.get_emprestimos_por_leitor(self.email)

@@ -31,9 +31,14 @@ class Init:
         biblioteca.add_leitor(leitor1)
         biblioteca.add_leitor(leitor2)
 
-        livro_um = biblioteca.get_livro_por_cod(1)
-        livro_dois = biblioteca.get_livro_por_cod(2)
-        livro_tres = biblioteca.get_livro_por_cod(3)
+        if biblioteca.get_lista_livros():
+            livro_um = biblioteca.get_livro_por_cod(1)
+            livro_dois = biblioteca.get_livro_por_cod(2)
+            livro_tres = biblioteca.get_livro_por_cod(3)
+        else:
+            livro_um = livro1
+            livro_dois = livro2
+            livro_tres = livro3
 
         emprestimo1 = biblioteca.emprestar(livro_um, leitor1)
         emprestimo2 = biblioteca.emprestar(livro_dois, leitor1)

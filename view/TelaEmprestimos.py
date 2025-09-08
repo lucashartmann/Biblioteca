@@ -38,16 +38,14 @@ class TelaEmprestimos(VerticalScroll):
         if len(self.emprestimos_filtrados) > 0:
             quant = len(self.emprestimos_filtrados)
         else:
-            quant = len(self.emprestimos)
+            if self.emprestimos:
+                quant = len(self.emprestimos)
+            else:
+                quant = 0
         self.query_one(
             TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, nome: lucas' \n\nQuantidade de Empréstimos: {quant}"
 
     def on_mount(self):
-        if Init.usuario_leitor:
-            self.emprestimos = Init.leitor1.get_lista_emprestimos()
-        else:
-            self.emprestimos = Init.biblioteca.get_lista_emprestimos()
-            
         emprestimos_str = []
         if self.montou:
             self.query_one(Pretty).update(emprestimos_str)
@@ -65,20 +63,27 @@ class TelaEmprestimos(VerticalScroll):
                 cod_livro = self.query_one(Input).value
                 devolucao = Controller.devolver(cod_livro, Init.leitor1.email)
                 self.notify(devolucao)
-                self.on_mount()
+                self.atualizar()
                 self.post_message(DevolucaoRealizada(self))
 
     def atualizar(self):
+        if Init.usuario_leitor:
+            self.emprestimos = Init.leitor1.get_lista_emprestimos()
+            self.notify(str(Init.leitor1.get_lista_emprestimos()))
+        else:
+            self.emprestimos = Init.biblioteca.get_lista_emprestimos()
+    
         resultado = self.query_one(Pretty)
         emprestimos_str = []
-        lista = self.emprestimos
-        if len(self.emprestimos_filtrados) > 0:
-            lista = self.emprestimos_filtrados
-        for emprestimo in lista:
-            emprestimo_str = str(emprestimo).split(",")[:-1]
-            emprestimos_str.append(emprestimo_str)
-        resultado.update(emprestimos_str)
-        self.setup_dados()
+        if self.emprestimos:
+            lista = self.emprestimos
+            if len(self.emprestimos_filtrados) > 0:
+                lista = self.emprestimos_filtrados
+            for emprestimo in lista:
+                emprestimo_str = str(emprestimo).split(",")[:-1]
+                emprestimos_str.append(emprestimo_str)
+            resultado.update(emprestimos_str)
+            self.setup_dados()
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]

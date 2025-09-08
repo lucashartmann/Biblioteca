@@ -96,13 +96,13 @@ def devolver(id_emprestimo, email):
         return f"Erro, leitor '{email}' não existe"
 
     emprestimo = leitor.get_emprestimo_por_id(id_emprestimo)
-    livro = emprestimo.get_livro()
-    leitor.atualizar_emprestimos()
 
     if not emprestimo:
         return f"Erro, empréstimo com id '{id_emprestimo}' não existe"
 
+    livro = emprestimo.get_livro()
     devolucao = Init.biblioteca.devolver(emprestimo)
+    print(devolucao)
 
     if devolucao:
         return f"Livro '{livro.get_titulo()}' devolvido com sucesso"

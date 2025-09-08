@@ -54,7 +54,7 @@ class Banco:
     def add_livro(self, livro):
         try:
             self.cursor.execute(
-                f'INSERT INTO Livro (titulo, autor, genero, quantidade, capa, disponivel) VALUES (?, ?, ?, ?, ?, ?)', [(livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_capa_binaria(), livro.is_disponivel())])
+                f'INSERT INTO Livro (titulo, autor, genero, quantidade, capa, disponivel) VALUES (?, ?, ?, ?, ?, ?)', (livro.get_titulo(), livro.get_autor(), livro.get_genero(), livro.get_quant(), livro.get_capa_binaria(), livro.is_disponivel()))
             self.conexao.commit()
             return True
         except Exception as e:
@@ -64,7 +64,7 @@ class Banco:
     def add_leitor(self, leitor):
         try:
             self.cursor.execute(
-                f'INSERT INTO Leitor (nome, email) VALUES (?, ?)', [(leitor.get_nome(), leitor.get_email())])
+                f'INSERT INTO Leitor (nome, email) VALUES (?, ?)', (leitor.get_nome(), leitor.get_email()))
             self.conexao.commit()
             return True
         except Exception as e:
@@ -74,7 +74,7 @@ class Banco:
     def add_emprestimo(self, emprestimo: Emprestimo.Emprestimo):
         try:
             self.cursor.execute(
-                f'INSERT INTO Emprestimo (id_livro, email_leitor, data_para_devolucao) VALUES (?, ?, ?)', [(int(emprestimo.get_livro().get_codigo()), emprestimo.get_leitor().get_email(), emprestimo.get_data_para_devolucao())])
+                f'INSERT INTO Emprestimo (id_livro, email_leitor, data_para_devolucao) VALUES (?, ?, ?)', (int(emprestimo.get_livro().get_codigo()), emprestimo.get_leitor().get_email(), emprestimo.get_data_para_devolucao()))
             self.conexao.commit()
             return True
         except Exception as e:
