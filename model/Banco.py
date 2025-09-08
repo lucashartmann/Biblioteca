@@ -2,7 +2,6 @@ import sqlite3
 import os
 from model import Emprestimo, Livro, Leitor
 
-
 class Banco:
 
     def __init__(self):
@@ -87,7 +86,7 @@ class Banco:
                 DELETE FROM Livro
                 WHERE id_livro = ?;
                 """
-            self.cursor.execute(sql_delete_query, cod_livro)
+            self.cursor.execute(sql_delete_query, (cod_livro,))
             self.conexao.commit()
             return True
         except Exception as e:
@@ -100,7 +99,7 @@ class Banco:
                 DELETE FROM Leitor
                 WHERE email = ?;
                 """
-            self.cursor.execute(sql_delete_query, email)
+            self.cursor.execute(sql_delete_query, (email,))
             self.conexao.commit()
             return True
         except Exception as e:
@@ -113,7 +112,7 @@ class Banco:
                 DELETE FROM Emprestimo
                 WHERE id_emprestimo = ?;
                 """
-            self.cursor.execute(sql_delete_query, id_emprestimo)
+            self.cursor.execute(sql_delete_query, (id_emprestimo,))
             self.conexao.commit()
             return True
         except Exception as e:

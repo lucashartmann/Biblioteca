@@ -44,8 +44,10 @@ class Init:
         emprestimo2 = biblioteca.emprestar(livro_dois, leitor1)
         emprestimo3 = biblioteca.emprestar(livro_tres, leitor2)
 
-        adicao_emprestimo = leitor1.add_emprestimo(emprestimo1)
-        adicao_emprestimo1 = leitor2.add_emprestimo(emprestimo3)
+        leitor1.add_emprestimo(emprestimo1)
         leitor1.add_emprestimo(emprestimo2)
+        
+        leitor2.add_emprestimo(emprestimo3)
+        
     else:
         leitor1 = biblioteca.get_leitor_por_email("LUCAS@EMAIL.COM")

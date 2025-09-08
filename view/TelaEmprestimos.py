@@ -69,10 +69,9 @@ class TelaEmprestimos(VerticalScroll):
     def atualizar(self):
         if Init.usuario_leitor:
             self.emprestimos = Init.leitor1.get_lista_emprestimos()
-            self.notify(str(Init.leitor1.get_lista_emprestimos()))
         else:
             self.emprestimos = Init.biblioteca.get_lista_emprestimos()
-    
+
         resultado = self.query_one(Pretty)
         emprestimos_str = []
         if self.emprestimos:
@@ -84,6 +83,8 @@ class TelaEmprestimos(VerticalScroll):
                 emprestimos_str.append(emprestimo_str)
             resultado.update(emprestimos_str)
             self.setup_dados()
+        else:
+            resultado.update("Nenhum empréstimo disponivel")
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]
