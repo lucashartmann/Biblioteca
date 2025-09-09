@@ -9,7 +9,15 @@ class Biblioteca:
     def emprestar(self, livro, leitor):
         if livro.is_disponivel():
             livro.set_quant(livro.get_quant() - 1)
+            self.banco_dados.atualizar_livro(
+                "quantidade", livro.get_codigo(), livro.get_quant())
             livro.atualizar_disponivel()
+            if livro.disponivel:
+                self.banco_dados.atualizar_livro(
+                    "disponivel", livro.get_codigo(), 1)
+            else:
+                self.banco_dados.atualizar_livro(
+                    "disponivel", livro.get_codigo(), 0)
             return Emprestimo.Emprestimo(livro, leitor)
         return None
 
@@ -20,7 +28,15 @@ class Biblioteca:
         devolucao = leitor.remove_emprestimo(emprestimo)
         if devolucao:
             livro.set_quant(livro.get_quant() + 1)
+            self.banco_dados.atualizar_livro(
+                "quantidade", livro.get_codigo(), livro.get_quant())
             livro.atualizar_disponivel()
+            if livro.disponivel:
+                self.banco_dados.atualizar_livro(
+                    "disponivel", livro.get_codigo(), 1)
+            else:
+                self.banco_dados.atualizar_livro(
+                    "disponivel", livro.get_codigo(), 0)
             if not self.get_livro_por_cod(livro.get_codigo()):
                 self.add_livro(livro)
             return True
