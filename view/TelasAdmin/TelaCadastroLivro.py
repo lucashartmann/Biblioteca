@@ -5,6 +5,7 @@ from textual import on
 from textual.message import Message
 from model import Init
 
+
 class CadastroRealizado(Message):
     def __init__(self, sender) -> None:
         super().__init__()

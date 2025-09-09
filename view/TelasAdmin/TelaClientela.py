@@ -27,7 +27,6 @@ class TelaClientela(Container):
             quant = len(self.leitores)
         self.query_one(TextArea).text = f"Quantidade de leitores: {quant}"
 
-
     def on_mount(self):
         self.leitores = Init.biblioteca.get_lista_leitores()
         leitores_str = [str(leitor) for leitor in self.leitores]
@@ -50,6 +49,7 @@ class TelaClientela(Container):
                 self.atualizar()
 
     def atualizar(self):
+        self.leitores = Init.biblioteca.get_lista_leitores()
         resultado = self.query_one(Pretty)
         if len(self.leitores_filtrados) > 0:
             leitores_str = [str(leitor)

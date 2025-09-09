@@ -64,10 +64,10 @@ def emprestar(cod_livro, email):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not livro:
-        return f"Erro, livro '{cod_livro}' não existe"
+        return f"ERRO, livro '{cod_livro}' não existe"
 
     if not leitor:
-        return f"Erro, leitor '{email}' não existe"
+        return f"ERRO, leitor '{email}' não existe"
 
     emprestimo = Init.biblioteca.emprestar(livro, leitor)
     leitor.atualizar_emprestimos()
@@ -77,9 +77,9 @@ def emprestar(cod_livro, email):
         if adicao:
             return f"Livro '{livro.get_titulo()}' emprestado com sucesso"
         else:
-            "Erro ao adicionar emprestimo ao leitor"
+            return "ERRO ao adicionar emprestimo ao leitor"
     else:
-        return f"Erro ao emprestar livro '{livro.get_titulo()}', livro não está disponivel"
+        return f"ERRO ao emprestar livro '{livro.get_titulo()}', livro não está disponivel"
 
 
 def devolver(id_emprestimo, email):
@@ -93,21 +93,20 @@ def devolver(id_emprestimo, email):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not leitor:
-        return f"Erro, leitor '{email}' não existe"
+        return f"ERRO, leitor '{email}' não existe"
 
     emprestimo = leitor.get_emprestimo_por_id(id_emprestimo)
 
     if not emprestimo:
-        return f"Erro, empréstimo com id '{id_emprestimo}' não existe"
+        return f"ERRO, empréstimo com id '{id_emprestimo}' não existe"
 
     livro = emprestimo.get_livro()
     devolucao = Init.biblioteca.devolver(emprestimo)
-    print(devolucao)
 
     if devolucao:
         return f"Livro '{livro.get_titulo()}' devolvido com sucesso"
     else:
-        return f"Erro ao devolver livro '{livro.get_titulo()}' do empréstimo '{id_emprestimo}'"
+        return f"ERRO ao devolver livro '{livro.get_titulo()}' do empréstimo '{id_emprestimo}'"
 
 
 def cadastrar_livro(dados):
@@ -118,21 +117,21 @@ def cadastrar_livro(dados):
     genero = dados[-1]
 
     if titulo == "":
-        return "Erro, titulo vazio"
+        return "ERRO, titulo vazio"
 
     if autor == "":
-        return "Erro, autor vazio"
+        return "ERRO, autor vazio"
 
     if genero == "":
-        return "Erro, genero vazio"
+        return "ERRO, genero vazio"
 
     if quant == "":
-        return "Erro, quant vazio"
+        return "ERRO, quant vazio"
 
     try:
         quant = int(quant)
     except:
-        return f"Erro ao converter '{quant}'"
+        return f"ERRO ao converter '{quant}'"
 
     livro = Livro.Livro(titulo, autor, genero, quant)
 
@@ -157,7 +156,7 @@ def cadastrar_leitor(dados):
         return "Erro, nome vazio"
 
     if email == "":
-        return "Erro, email vazio"
+        return "ERRO, email vazio"
 
     leitor = Leitor.Leitor(nome, email)
 
@@ -174,6 +173,11 @@ def cadastrar_leitor(dados):
 
 def excluir_leitor(email):
 
+    consulta = Init.biblioteca.get_leitor_por_email(email)
+
+    if not consulta:
+        return f"ERRO, Leitor com email '{email}' não existe"
+
     if email == "":
         return "ERRO. Email do leitor está vazio"
 
@@ -183,7 +187,7 @@ def excluir_leitor(email):
     if remocao:
         return f"Leitor '{email}' removido com sucesso"
     else:
-        return f"Erro, leitor '{email}' não existe"
+        return f"ERRO, leitor '{email}' não existe"
 
 
 def excluir_livro(cod_livro):
@@ -195,12 +199,17 @@ def excluir_livro(cod_livro):
     except:
         return f"ERRO ao converter '{cod_livro}'"
 
+    consulta = Init.biblioteca.get_livro_por_cod(cod_livro)
+
+    if not consulta:
+        return f"ERRO, Livro com código '{cod_livro}' não existe"
+
     remocao = Init.biblioteca.remove_livro(cod_livro)
 
     if remocao:
         return f"Livro '{cod_livro}' removido com sucesso!"
     else:
-        return f"Erro, não existe livro com código '{cod_livro}'"
+        return f"ERRO, não existe livro com código '{cod_livro}'"
 
 
 def editar_leitor(email, dados):
@@ -211,7 +220,7 @@ def editar_leitor(email, dados):
     leitor = Init.biblioteca.get_leitor_por_email(email)
 
     if not leitor:
-        return f"Erro, leitor '{email}' não existe"
+        return f"ERRO, leitor com email '{email}' não existe"
 
     mensagem = ""
 
@@ -224,7 +233,7 @@ def editar_leitor(email, dados):
         Init.biblioteca.atualizar_leitor("nome", leitor.get_email(), novo_nome)
     if novo_email != "":
         if Init.biblioteca.get_leitor_por_email(novo_email):
-            mensagem += f"Erro, '{novo_email}' já cadastrado"
+            mensagem += f"ERRO, '{novo_email}' já cadastrado"
         else:
             Init.biblioteca.remove_leitor(email)
             leitor.set_email(novo_email)
@@ -245,7 +254,7 @@ def editar_livro(cod_livro, dados):
     livro = Init.biblioteca.get_livro_por_cod(cod_livro)
 
     if not livro:
-        return f"Erro, não existe livro com código '{cod_livro}'"
+        return f"ERRO, não existe livro com código '{cod_livro}'"
 
     mensagem = ""
 
@@ -275,7 +284,7 @@ def editar_livro(cod_livro, dados):
             Init.biblioteca.atualizar_livro(
                 "quantidade", livro.get_codigo(), quant)
         except:
-            mensagem += f"Erro ao converter '{quant}'"
+            mensagem += f"ERRO ao converter '{quant}'"
 
     if caminho_capa != "":
         livro.set_capa_binaria(caminho_capa)

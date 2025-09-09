@@ -27,12 +27,15 @@ class TelaCadastroLeitor(Container):
 
     def on_mount(self):
         input_email = self.query_one("#input_pesquisar_email", Input)
-        if Init.usuario_leitor:
+        if Init.usuario_leitor and Init.leitor1:
             input_email.value = Init.leitor1.get_email()
             input_email.disabled = True
-        else:
+        elif not Init.usuario_leitor:
             input_email.value = ""
             input_email.disabled = False
+        else:
+            input_email.value = "Leitor não cadastrado"
+            input_email.disabled = True
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -67,7 +70,7 @@ class TelaCadastroLeitor(Container):
                         if Init.usuario_leitor:
                             self.on_mount()
                         self.post_message(CadastroLeitorRealizado(self))
-                        
+
                     case _:
                         self.notify("Nenhuma opção de operação selecionada")
 

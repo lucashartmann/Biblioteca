@@ -7,7 +7,7 @@ class Leitor:
         self.nome = nome
         self.email = email
         self.banco_dados = Banco()
-        
+
     def fechar_banco(self):
         self.banco_dados.encerrar()
 
@@ -25,7 +25,7 @@ class Leitor:
 
     def get_lista_emprestimos(self):
         return self.banco_dados.get_emprestimos_por_leitor(self.email)
-    
+
     def get_nome(self):
         return self.nome
 

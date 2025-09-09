@@ -38,7 +38,7 @@ class TelaEstoqueCapas(Screen):
     def atualizar_capas(self):
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
-        # contador = 0
+        self.livros = Init.biblioteca.get_lista_livros()
         lista = self.livros
         if len(self.livros_filtrados) > 0:
             lista = self.livros_filtrados
@@ -72,11 +72,12 @@ class TelaEstoqueCapas(Screen):
                 self.livros_etiquetados[livro.get_codigo()] = pixel
 
                 os.remove(caminho)
-                
+
                 try:
-                        os.remove(f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
+                    os.remove(
+                        f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
                 except FileNotFoundError:
-                        pass
+                    pass
 
     def _on_screen_resume(self):
         self.livros = Init.biblioteca.get_lista_livros()
@@ -92,11 +93,11 @@ class TelaEstoqueCapas(Screen):
                         Controller.resize(caminho))
 
                     self.livros_etiquetados[livro.get_codigo()] = pixel
-                    
-                    
+
                     os.remove(caminho)
                     try:
-                        os.remove(f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
+                        os.remove(
+                            f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
                     except FileNotFoundError:
                         pass
 
@@ -136,12 +137,15 @@ class TelaEstoqueCapas(Screen):
             case "bt_voltar":
                 self.screen.app.switch_screen("tela_inicial")
             case "bt_retirar":
-                cod_livro = self.query_one(Input).value
-                retirada = Controller.emprestar(
-                    cod_livro, Init.leitor1.get_email())
-                self.notify(retirada)
-                self.atualizar_capas()
-                self.post_message(RetiradaRealizada(self))
+                if Init.leitor1:
+                    cod_livro = self.query_one(Input).value
+                    retirada = Controller.emprestar(
+                        cod_livro, Init.leitor1.get_email())
+                    self.notify(retirada)
+                    self.atualizar_capas()
+                    self.post_message(RetiradaRealizada(self))
+                else:
+                    self.notify("ERRO, Leitor não cadastrado")
             case "bt_remover":
                 input_id = self.query_one(Input).value
                 mensagem = Controller.excluir_livro(input_id)

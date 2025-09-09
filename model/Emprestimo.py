@@ -15,13 +15,12 @@ class Emprestimo:
 
     def get_leitor(self):
         return self.leitor
-    
+
     def get_id(self):
         return self.id
-    
+
     def set_id(self, id):
         self.id = id
-   
 
     def get_data_para_devolucao(self):
         return self.data_para_devolucao

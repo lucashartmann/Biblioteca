@@ -21,7 +21,7 @@ class TelaEmprestimos(VerticalScroll):
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(read_only=True)
 
-    if Init.usuario_leitor:
+    if Init.usuario_leitor and Init.leitor1:
         emprestimos = Init.leitor1.get_lista_emprestimos()
     else:
         emprestimos = Init.biblioteca.banco_dados.get_lista_emprestimos()
@@ -38,10 +38,7 @@ class TelaEmprestimos(VerticalScroll):
         if len(self.emprestimos_filtrados) > 0:
             quant = len(self.emprestimos_filtrados)
         else:
-            if self.emprestimos:
-                quant = len(self.emprestimos)
-            else:
-                quant = 0
+            quant = len(self.emprestimos)
         self.query_one(
             TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, nome: lucas' \n\nQuantidade de Empréstimos: {quant}"
 
@@ -61,30 +58,34 @@ class TelaEmprestimos(VerticalScroll):
                 self.screen.app.switch_screen("tela_inicial")
             case "bt_devolver":
                 cod_livro = self.query_one(Input).value
-                devolucao = Controller.devolver(cod_livro, Init.leitor1.email)
-                self.notify(devolucao)
-                self.atualizar()
-                self.post_message(DevolucaoRealizada(self))
+                if Init.leitor1:
+                    devolucao = Controller.devolver(
+                        cod_livro, Init.leitor1.email)
+                    self.notify(devolucao)
+                    self.atualizar()
+                    self.post_message(DevolucaoRealizada(self))
+                else:
+                    self.notify("Leitor não cadastrado")
 
     def atualizar(self):
-        if Init.usuario_leitor:
-            self.emprestimos = Init.leitor1.get_lista_emprestimos()
-        else:
-            self.emprestimos = Init.biblioteca.get_lista_emprestimos()
-
         resultado = self.query_one(Pretty)
-        emprestimos_str = []
-        if self.emprestimos:
-            lista = self.emprestimos
-            if len(self.emprestimos_filtrados) > 0:
-                lista = self.emprestimos_filtrados
-            for emprestimo in lista:
-                emprestimo_str = str(emprestimo).split(",")[:-1]
-                emprestimos_str.append(emprestimo_str)
-            resultado.update(emprestimos_str)
-            self.setup_dados()
+        if Init.usuario_leitor and Init.leitor1:
+            self.emprestimos = Init.leitor1.get_lista_emprestimos()
+        elif not Init.usuario_leitor:
+            self.emprestimos = Init.biblioteca.get_lista_emprestimos()
         else:
-            resultado.update("Nenhum empréstimo disponivel")
+            resultado.update("Leitor não cadastrado")
+            return
+
+        emprestimos_str = []
+        lista = self.emprestimos
+        if len(self.emprestimos_filtrados) > 0:
+            lista = self.emprestimos_filtrados
+        for emprestimo in lista:
+            emprestimo_str = str(emprestimo).split(",")[:-1]
+            emprestimos_str.append(emprestimo_str)
+        resultado.update(emprestimos_str)
+        self.setup_dados()
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]

@@ -11,14 +11,13 @@ class Livro:
         self.disponivel = True
 
     def set_capa_binaria(self, caminho):
-            if type(caminho) == str:
-                if "." in caminho or "/" in caminho or "//" in caminho:
-                    with open(caminho, 'rb') as f:
-                        binario_imagem = f.read()
-                    self.capa_binaria = binario_imagem
-            else:
-                    self.capa_binaria = caminho
-        
+        if type(caminho) == str:
+            if "." in caminho or "/" in caminho or "//" in caminho:
+                with open(caminho, 'rb') as f:
+                    binario_imagem = f.read()
+                self.capa_binaria = binario_imagem
+        else:
+            self.capa_binaria = caminho
 
     def set_codigo(self, novo_codigo):
         self.codigo = novo_codigo

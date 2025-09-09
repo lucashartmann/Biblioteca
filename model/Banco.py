@@ -2,6 +2,7 @@ import sqlite3
 import os
 from model import Emprestimo, Livro, Leitor
 
+
 class Banco:
 
     def __init__(self):
@@ -149,8 +150,6 @@ class Banco:
         self.cursor.execute(
             f'SELECT * FROM Emprestimo WHERE email_leitor = ?', (email_leitor,))
         lista_registros = self.cursor.fetchall()
-        if not lista_registros:
-            return None
         lista_emprestimos = []
         for registro in lista_registros:
             livro = self.get_livro_por_cod(registro[1])
@@ -166,8 +165,6 @@ class Banco:
         lista = []
         self.cursor.execute("SELECT * FROM Emprestimo")
         resultados = self.cursor.fetchall()
-        if not resultados:
-            return None
         for dados in resultados:
             livro = self.get_livro_por_cod(dados[1])
             leitor = self.get_leitor_por_email(dados[2])
@@ -181,8 +178,6 @@ class Banco:
         lista = []
         self.cursor.execute("SELECT * FROM Livro")
         resultados = self.cursor.fetchall()
-        if not resultados:
-            return None
         for dados in resultados:
             livro = Livro.Livro(*dados[1:5])
             livro.set_codigo(dados[0])
@@ -198,8 +193,6 @@ class Banco:
         lista = []
         self.cursor.execute("SELECT * FROM Leitor")
         resultados = self.cursor.fetchall()
-        if not resultados:
-            return None
         for dados in resultados:
             lista.append(Leitor.Leitor(*dados))
         return lista

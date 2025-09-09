@@ -6,10 +6,10 @@ import os
 def salvar(nome_arquivo, chave, dados):
     diretorio = "data"
     caminho = f"{diretorio}\\{nome_arquivo}"
-    
+
     if not os.path.isdir(diretorio):
         os.makedirs(diretorio)
-        
+
     with shelve.open(f"data/{nome_arquivo}") as db:
         db[chave] = dados
 

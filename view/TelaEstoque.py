@@ -40,7 +40,8 @@ class TelaEstoque(VerticalScroll):
             quant = len(self.livros_filtrados)
         else:
             quant = len(self.livros)
-        self.query_one(TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, genero: distopia' \n\nQuantidade de livros: {quant}"
+        self.query_one(
+            TextArea).text = f"Exemplo de busca: 'titulo: Maus - 1984, genero: distopia' \n\nQuantidade de livros: {quant}"
 
     def on_mount(self):
         emprestimos_str = []
@@ -66,11 +67,14 @@ class TelaEstoque(VerticalScroll):
                 self.screen.app.switch_screen("tela_inicial")
             case "bt_retirar":
                 cod_livro = self.query_one(Input).value
-                retirada = Controller.emprestar(
-                    cod_livro, Init.leitor1.get_email())
-                self.notify(retirada)
-                self.on_mount()
-                self.post_message(RetiradaRealizada(self))
+                if Init.leitor1:
+                    retirada = Controller.emprestar(
+                        cod_livro, Init.leitor1.get_email())
+                    self.notify(retirada)
+                    self.on_mount()
+                    self.post_message(RetiradaRealizada(self))
+                else:
+                    self.notify("ERRO. Leitor não cadastrado")
             case "bt_remover":
                 input_id = self.query_one(Input).value
                 mensagem = Controller.excluir_livro(input_id)
@@ -180,6 +184,7 @@ class TelaEstoque(VerticalScroll):
     def atualizar(self):
         resultado = self.query_one(Pretty)
         livros_str = []
+        self.livros = Init.biblioteca.get_lista_livros()
         lista = self.livros
         if len(self.livros_filtrados) > 0:
             lista = self.livros_filtrados
