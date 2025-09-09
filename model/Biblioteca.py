@@ -13,13 +13,7 @@ class Biblioteca:
             return Emprestimo.Emprestimo(livro, leitor)
         return None
 
-    def fechar_banco(self):
-        self.banco_dados.encerrar()
-
     def devolver(self, emprestimo):
-        if not emprestimo:
-            return False
-
         leitor = emprestimo.get_leitor()
         livro = emprestimo.get_livro()
 

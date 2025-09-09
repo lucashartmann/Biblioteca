@@ -158,7 +158,7 @@ class TelaEstoqueCapas(Screen):
         lista = self.query_one("#lst_item", ListView)
         info = self.query_one("#tx_info", Label)
         try:
-            nome_item = self.livros[lista.index + 1].get_titulo()
+            nome_item = self.livros[lista.index].get_titulo()
             info.update(f"{nome_item}")
         except:
             pass

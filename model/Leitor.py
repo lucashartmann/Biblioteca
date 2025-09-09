@@ -7,10 +7,7 @@ class Leitor:
         self.nome = nome
         self.email = email
         self.banco_dados = Banco()
-
-    def fechar_banco(self):
-        self.banco_dados.encerrar()
-
+        
     def add_emprestimo(self, emprestimo):
         return self.banco_dados.add_emprestimo(emprestimo)
 

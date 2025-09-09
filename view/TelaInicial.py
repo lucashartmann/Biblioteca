@@ -27,5 +27,4 @@ class TelaInicial(Screen):
                 self.screen.app.switch_screen("tela_admin")
                 Init.usuario_leitor = False
             case "bt_sair":
-                Controller.fechar_banco()
                 self.screen.app.exit()

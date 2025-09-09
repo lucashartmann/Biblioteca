@@ -4,14 +4,6 @@ from rich_pixels import Pixels
 from PIL import Image
 import os
 
-
-def fechar_banco():
-    if Init.biblioteca.get_lista_leitores():
-        for leitor in Init.biblioteca.get_lista_leitores():
-            leitor.fechar_banco()
-    Init.biblioteca.fechar_banco()
-
-
 def resize(caminho):
     size = 30, 30
 
