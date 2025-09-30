@@ -7,6 +7,9 @@ from textual.binding import Binding
 from model import Init
 from textual.message import Message
 import os
+from textual_image.widget import Image
+from PIL import Image as pil_image
+from io import BytesIO
 
 
 class RetiradaRealizada(Message):
@@ -36,6 +39,15 @@ class TelaEstoqueCapas(Screen):
     livros_etiquetados = dict()
 
     def atualizar_capas(self):
+        for livro in self.livros:
+            if livro.get_codigo() not in self.livros_etiquetados.keys():
+                if livro.get_capa_binaria():
+                    capa_bytes = livro.get_capa_binaria()
+                    capa_io = BytesIO(capa_bytes)
+                    widget_imagem = Image(capa_io)
+                    self.livros_etiquetados[livro.get_codigo()] = widget_imagem
+                 
+
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
         self.livros = Init.biblioteca.get_lista_livros()
@@ -45,61 +57,23 @@ class TelaEstoqueCapas(Screen):
 
         for livro in lista:
             if livro.get_codigo() in self.livros_etiquetados.keys():
-                pixel = self.livros_etiquetados[livro.get_codigo()]
-                if pixel:
+                widget_imagem = self.livros_etiquetados[livro.get_codigo()]
+                if widget_imagem:
 
-                    static = Static(pixel)
-                    static.styles.width = 30
-                    static.styles.height = 30
+                    widget_imagem.styles.width = 30
+                    widget_imagem.styles.height = 21
 
-                    list_item = ListItem(static)
-                    list_item.styles.width = 30 - 10
-                    list_item.styles.height = 30 - 15
+                    list_item = ListItem(
+                        widget_imagem, name=livro.get_titulo())
+                    list_item.styles.width = 30
+                    list_item.styles.height = 30
 
                     list_view.append(list_item)
-
-    def on_mount(self):
-        self.livros = Init.biblioteca.get_lista_livros()
-        for livro in self.livros:
-            if livro.get_capa_binaria():
-                caminho = f'{livro.get_codigo()}.jpg'
-                with open(caminho, 'wb') as f:
-                    f.write(livro.get_capa_binaria())
-
-                pixel = Controller.gerar_pixel(
-                    Controller.resize(caminho))
-
-                self.livros_etiquetados[livro.get_codigo()] = pixel
-
-                os.remove(caminho)
-
-                try:
-                    os.remove(
-                        f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
-                except FileNotFoundError:
-                    pass
 
     def _on_screen_resume(self):
         self.livros = Init.biblioteca.get_lista_livros()
 
-        for livro in self.livros:
-            if livro.get_codigo() not in self.livros_etiquetados.keys():
-                if livro.get_capa_binaria():
-                    caminho = f'{livro.get_codigo()}.jpg'
-                    with open(caminho, 'wb') as f:
-                        f.write(livro.get_capa_binaria())
-
-                    pixel = Controller.gerar_pixel(
-                        Controller.resize(caminho))
-
-                    self.livros_etiquetados[livro.get_codigo()] = pixel
-
-                    os.remove(caminho)
-                    try:
-                        os.remove(
-                            f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}")
-                    except FileNotFoundError:
-                        pass
+        self.atualizar_capas()
 
         if Init.usuario_leitor:
             lista_usuario = []
@@ -153,15 +127,9 @@ class TelaEstoqueCapas(Screen):
                 self.post_message(RetiradaRealizada(self))
                 self.atualizar_capas()
 
-    @on(ListView.Highlighted, "#lst_item")
-    def item_selecionado(self) -> None:
-        lista = self.query_one("#lst_item", ListView)
-        info = self.query_one("#tx_info", Label)
-        try:
-            nome_item = self.livros[lista.index + 1].get_titulo()
-            info.update(f"{nome_item}")
-        except:
-            pass
+    def on_list_view_highlighted(self, evento: ListView.Highlighted):
+        self.query_one("#tx_info", Label).update(
+            evento.list_view.highlighted_child.name)
 
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):

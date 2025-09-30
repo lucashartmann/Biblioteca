@@ -1,7 +1,5 @@
 import sys
 from model import Leitor, Livro, Init
-from rich_pixels import Pixels
-from PIL import Image
 import os
 
 
@@ -10,34 +8,6 @@ def fechar_banco():
         for leitor in Init.biblioteca.get_lista_leitores():
             leitor.fechar_banco()
     Init.biblioteca.fechar_banco()
-
-
-def resize(caminho):
-    size = 30, 30
-
-    if not os.path.exists(caminho):
-        print(f"Imagem não encontrada: {caminho}")
-        return False, ""
-
-    try:
-        im = Image.open(caminho)
-        im.thumbnail(size, Image.Resampling.LANCZOS)
-        novo_caminho = f"{caminho.split('.')[0]}copia.{caminho.split('.')[1]}"
-        if os.path.exists(novo_caminho):
-            os.remove(novo_caminho)
-        im.save(novo_caminho)
-    except ValueError:
-        return None
-    return im
-
-
-def gerar_pixel(imagem):
-    try:
-        pixels = Pixels.from_image(imagem)
-        return pixels
-    except Exception:
-        print(f"Erro ao gerar pixels")
-        return None
 
 
 def is_pyinstaller():
