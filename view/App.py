@@ -3,19 +3,12 @@ from view import TelaInicial, TelaEstoqueCapas
 from view.TelasLeitor import TelaLeitor
 from view.TelasAdmin import TelaAdmin
 from textual.binding import Binding
-from controller import Controller
-
 
 class App(App):
 
     BINDINGS = {
         Binding("ctrl+l", "switch_screen('tela_estoque')", "Tela Estoque"),
-        Binding("ctrl+q", "sair", "Sair")
     }
-
-    def action_sair(self):
-        Controller.fechar_banco()
-        self.exit()
 
     SCREENS = {
         "tela_inicial": TelaInicial.TelaInicial,

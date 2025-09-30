@@ -40,7 +40,6 @@ def emprestar(cod_livro, email):
         return f"ERRO, leitor '{email}' não existe"
 
     emprestimo = Init.biblioteca.emprestar(livro, leitor)
-    leitor.atualizar_emprestimos()
 
     if emprestimo:
         adicao = leitor.add_emprestimo(emprestimo)

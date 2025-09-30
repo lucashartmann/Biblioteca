@@ -38,7 +38,7 @@ class Emprestimo:
         hoje = datetime.date.today()
         prazo = datetime.timedelta(weeks=random.randint(1, 50))
         data_para_devolucao = hoje + prazo
-        data_formatada = data_para_devolucao.strftime("%d/%m/%Y")
+        data_formatada = data_para_devolucao.isoformat()
         return data_formatada
 
     def __str__(self):
